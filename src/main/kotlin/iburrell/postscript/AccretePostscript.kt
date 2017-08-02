@@ -1,7 +1,6 @@
 package iburrell.postscript
 
 import iburrell.accrete.Accrete
-import iburrell.accrete.Planetismal
 
 // Author: Ian Burrell  <iburrell@leland.stanford.edu>
 // Created: 1997/01/15
@@ -23,9 +22,7 @@ class AccretePostscript : Postscript("accrete.ps") {
 
         val system = gen.DistributePlanets()
 
-        val e = system.elements()
-        while (e.hasMoreElements()) {
-            val curr = e.nextElement() as Planetismal
+        system.forEach { curr ->
             val au = log10(curr.orbitalAxis)
             val r = Math.pow(curr.massSolar, 1.0 / 3.0)
             circle(au, 0.0, r, curr.isGasGiant)

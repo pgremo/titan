@@ -13,14 +13,13 @@ import java.applet.Applet
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.event.MouseEvent
-import java.util.*
 
 class AccreteApplet : Applet(), Runnable {
 
     private var standalone: Boolean = false
 
     private var gen: Accrete? = null
-    private var planets: Vector<*>? = null
+    private var planets: List<Planetismal>? = null
 
     override fun init() {
         background = Color.white
@@ -80,10 +79,7 @@ class AccreteApplet : Applet(), Runnable {
         val vscale = vscale()
         val rscale = hscale / 30
 
-        val e = planets!!.elements()
-
-        while (e.hasMoreElements()) {
-            val curr = e.nextElement() as Planetismal
+        planets!!.forEach { curr ->
             val au = log10(curr.orbitalAxis)
             val rad = Math.pow(curr.massEarth, 1.0 / 3.0)
             val r = (rad * rscale.toDouble()).toInt()

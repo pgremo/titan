@@ -32,7 +32,6 @@
 package iburrell.accrete
 
 import java.io.PrintStream
-import java.util.*
 
 /**
 
@@ -81,7 +80,7 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
 
      * @return Vector containing all of the planets written out.
      */
-    fun DistributePlanets(): Vector<*> {
+    fun DistributePlanets(): List<Planetismal> {
         dust_head = DustBand(inner_dust, outer_dust)
         planet_head = null
 
@@ -110,32 +109,9 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
 
         }
 
-        return PlanetArray(planet_head!!)
+        return PlanetArray(planet_head)
 
     }
-
-
-    /**
-     * Steps through list of dust bands checking to see if any of
-     * those that bands that overlap the given range have dust
-     * present.  This was originally done as a quick check with the
-     * swept limits using the full mass for newly injected nuclei.
-     */
-    internal fun DustAvailable(inside: Double, outside: Double): Boolean {
-        var curr = dust_head
-        while (curr != null && curr.outer < inside) {
-            curr = curr.next
-        }
-
-        var dust_here = if (curr != null) curr.dust else false
-
-        while (curr != null && curr.inner < outside) {
-            curr = curr.next
-            dust_here = dust_here || curr!!.dust
-        }
-        return dust_here
-    }
-
 
     /**
      * Repeatedly accretes dust and gas onto the new planetismal by
@@ -365,51 +341,15 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
         }
     }
 
-
-    fun PrintClass(out: PrintStream) {
-        out.println("stellar mass: " + stellar_mass)
-        out.println("stellar luminosity: " + stellar_luminosity)
-        out.println("bounds: $inner_bound  $outer_bound")
-        out.println("dust: $inner_dust  $outer_dust")
-    }
-
-    fun PrintDusts(out: PrintStream) {
-        var curr = dust_head
-        while (curr != null) {
-            out.print(curr)
-            curr = curr.next
-        }
-    }
-
-    fun PrintPlanets(out: PrintStream) {
-        var curr = planet_head
-        while (curr != null) {
-            curr.Print(out)
-            curr = curr.next
-        }
-    }
-
-    fun PrintPlanets(out: PrintStream, planets: Vector<*>) {
-        val e = planets.elements()
-        while (e.hasMoreElements()) {
-            val curr = e.nextElement() as Planetismal
-            curr.Print(out)
-        }
+    fun PrintPlanets(out: PrintStream, planets: List<Planetismal>) {
+        planets.forEach { it.Print(out) }
     }
 
     companion object {
 
         // Converts a list of planets into a Vector.  The planets in the Vector
         // still contain the links but they aren't accessible to outside classes.
-        internal fun PlanetArray(head: Planetismal): Vector<*> {
-            val planets = Vector<Planetismal>()
-            var curr: Planetismal? = head
-            while (curr != null) {
-                planets.addElement(curr)
-                curr = curr.next
-            }
-            return planets
-        }
+        internal fun PlanetArray(head: Planetismal?) = generateSequence(head, { it.next }).toList()
 
         @JvmStatic fun main(args: Array<String>) {
             val gen = Accrete()
