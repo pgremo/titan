@@ -20,30 +20,14 @@ import java.io.PrintStream
  * Outside clients use the accessors.
 
  */
-class Planetismal @JvmOverloads internal constructor(a: Double, e: Double, m: Double = PROTOPLANET_MASS, giant: Boolean = false) {
+data class Planetismal internal constructor(var orbitalAxis: Double,
+                                            var eccentricity: Double,
+                                            var massSolar: Double = PROTOPLANET_MASS,
+                                            var isGasGiant: Boolean = false,
+                                            var next: Planetismal? = null) {
 
-    // Accessors
-
-    var orbitalAxis: Double = 0.toDouble()
-        internal set        // semi-major axis (AU)
-    var eccentricity: Double = 0.toDouble()
-        internal set        // eccentricity
-    var massSolar: Double = 0.toDouble()
-        internal set        // mass (solar mass)
-    var isGasGiant: Boolean = false
-        internal set
-    internal var next: Planetismal? = null
     val massEarth: Double
         get() = massSolar * Astro.SOLAR_MASS_EARTH_MASS
-
-    init {
-        orbitalAxis = a
-        eccentricity = e
-        massSolar = m
-        isGasGiant = giant
-        next = null
-    }
-
 
     internal fun PerihelionDistance(): Double {
         return DoleParams.PerihelionDistance(orbitalAxis, eccentricity)
@@ -62,34 +46,29 @@ class Planetismal @JvmOverloads internal constructor(a: Double, e: Double, m: Do
     }
 
     internal fun InnerEffectLimit(): Double {
-        return DoleParams.InnerEffectLimit(orbitalAxis, eccentricity,
-                DoleParams.ReducedMargin(massSolar))
+        return DoleParams.InnerEffectLimit(orbitalAxis, eccentricity, ReducedMargin())
     }
 
     internal fun OuterEffectLimit(): Double {
-        return DoleParams.OuterEffectLimit(orbitalAxis, eccentricity,
-                DoleParams.ReducedMargin(massSolar))
+        return DoleParams.OuterEffectLimit(orbitalAxis, eccentricity, ReducedMargin())
     }
 
     internal fun InnerSweptLimit(): Double {
-        return DoleParams.InnerSweptLimit(orbitalAxis, eccentricity,
-                DoleParams.ReducedMargin(massSolar))
+        return DoleParams.InnerSweptLimit(orbitalAxis, eccentricity, ReducedMargin())
     }
 
     internal fun OuterSweptLimit(): Double {
-        return DoleParams.OuterSweptLimit(orbitalAxis, eccentricity,
-                DoleParams.ReducedMargin(massSolar))
+        return DoleParams.OuterSweptLimit(orbitalAxis, eccentricity, ReducedMargin())
     }
 
     internal fun CriticalMass(luminosity: Double): Double {
         return DoleParams.CriticalMass(orbitalAxis, eccentricity, luminosity)
     }
 
-
     fun Print(out: PrintStream) {
-        out.print(orbitalAxis.toString() + " " + eccentricity + " " + massSolar)
+        out.print("$orbitalAxis $eccentricity $massSolar")
         if (massSolar > 2e-15)
-            out.print(" (" + massSolar * Astro.SOLAR_MASS_EARTH_MASS + ")")
+            out.print(" (${massSolar * Astro.SOLAR_MASS_EARTH_MASS})")
         if (isGasGiant)
             out.print(" giant")
         out.println()

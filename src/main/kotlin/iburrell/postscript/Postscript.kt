@@ -1,4 +1,4 @@
-package iburrell
+package iburrell.postscript
 
 // Author: Ian Burrell  <iburrell@leland.stanford.edu>
 // Created: 1997/01/15

@@ -1,4 +1,7 @@
-package iburrell.accrete
+package iburrell.postscript
+
+import iburrell.accrete.Accrete
+import iburrell.accrete.Planetismal
 
 // Author: Ian Burrell  <iburrell@leland.stanford.edu>
 // Created: 1997/01/15
@@ -6,17 +9,11 @@ package iburrell.accrete
 
 // Copyright 1997 Ian Burrell
 
-import iburrell.Postscript
+class AccretePostscript : Postscript("accrete.ps") {
 
-import java.util.Enumeration
-import java.util.Vector
-
-class AccretePostscript internal constructor() : Postscript("accrete.ps") {
-
-    internal var gen: Accrete
+    internal var gen: Accrete = Accrete()
 
     init {
-        gen = Accrete()
         window(-1.0, -1.0, 2.0, 1.0)
     }
 

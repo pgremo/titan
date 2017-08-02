@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/titan.iml" filepath="$PROJECT_DIR$/titan.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/titan_main.iml" filepath="$PROJECT_DIR$/.idea/modules/titan_main.iml" group="titan" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/titan_test.iml" filepath="$PROJECT_DIR$/.idea/modules/titan_test.iml" group="titan" />
     </modules>
   </component>
 </project>

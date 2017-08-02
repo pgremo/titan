@@ -42,8 +42,8 @@ import java.util.*
  * using DistributePlanets.
 
  */
-class Accrete @JvmOverloads constructor(internal var stellar_mass: Double        // in Solar masses
-                                        , internal var stellar_luminosity: Double = Astro.Luminosity(stellar_mass)  // in Solar luminsoities
+class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in Solar masses
+                                        internal var stellar_luminosity: Double = Astro.Luminosity(stellar_mass)  // in Solar luminsoities
 ) {
     internal var inner_bound: Double = 0.toDouble()
     internal var outer_bound: Double = 0.toDouble()    // in AU
@@ -127,9 +127,7 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double       
             curr = curr.next
         }
 
-        var dust_here = false
-        if (curr != null)
-            dust_here = curr.dust
+        var dust_here = if (curr != null) curr.dust else false
 
         while (curr != null && curr.inner < outside) {
             curr = curr.next
@@ -266,8 +264,7 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double       
         var curr = dust_head
         while (curr != null) {
             // check if band has dust left
-            if (curr.dust && curr.outer >= inner_bound
-                    && curr.inner <= outer_bound) {
+            if (curr.dust && curr.outer >= inner_bound && curr.inner <= outer_bound) {
                 dust_left = true
             }
             curr = curr.next
@@ -284,8 +281,7 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double       
         var curr = dust_head
         while (curr != null) {
             next = curr.next
-            if (next != null && curr.dust == next.dust
-                    && curr.gas == next.gas) {
+            if (next != null && curr.dust == next.dust && curr.gas == next.gas) {
                 curr.outer = next.outer
                 curr.next = next.next
                 next = curr
