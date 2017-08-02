@@ -19,7 +19,7 @@ class AccreteApplet : Applet(), Runnable {
     private var standalone: Boolean = false
 
     private var gen: Accrete? = null
-    private var planets: List<Planetismal>? = null
+    private var planets: Sequence<Planetismal>? = null
 
     override fun init() {
         background = Color.white

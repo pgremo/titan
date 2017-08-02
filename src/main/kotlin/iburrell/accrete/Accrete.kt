@@ -69,8 +69,8 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
     internal var dust_density: Double = 0.toDouble()
 
     internal var dust_head: DustBand? = null          // head of the list of dust bands
-    internal var planet_head: Planetismal? = null     // head of the list planetismals
 
+    internal val planets = java.util.TreeSet<Planetismal>(compareBy { it.orbitalAxis })
 
     /**
 
@@ -80,9 +80,8 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
 
      * @return Vector containing all of the planets written out.
      */
-    fun DistributePlanets(): List<Planetismal> {
+    fun DistributePlanets(): Sequence<Planetismal> {
         dust_head = DustBand(inner_dust, outer_dust)
-        planet_head = null
 
         var dust_left = true
         while (dust_left) {
@@ -102,14 +101,15 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
                 dust_left = CheckDustLeft()
                 CompressDustLanes()
 
-                if (!CoalescePlanetismals(tsml))
-                    InsertPlanet(tsml)
+                if (!CoalescePlanetismals(tsml)) {
+                    planets.add(tsml)
+                }
 
             }
 
         }
 
-        return PlanetArray(planet_head)
+        return planets.asSequence()
 
     }
 
@@ -273,8 +273,7 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
      * the two planets are coalesced into one.
      */
     internal fun CoalescePlanetismals(tsml: Planetismal): Boolean {
-        var curr = planet_head
-        while (curr != null) {
+        for (curr in planets) {
             val dist = curr.orbitalAxis - tsml.orbitalAxis
             val dist1: Double
             val dist2: Double
@@ -290,7 +289,6 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
                 CoalesceTwoPlanets(curr, tsml)
                 return true
             }
-            curr = curr.next
         }
         return false
     }
@@ -317,39 +315,11 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
     }
 
 
-    /**
-     * Inserts the given planetismal into the list of planets.  The
-     * list is kept in sorted order based on the semi-major axis.
-     */
-    internal fun InsertPlanet(tsml: Planetismal) {
-        if (planet_head == null)
-            planet_head = tsml
-        else {
-            if (tsml.orbitalAxis < planet_head!!.orbitalAxis) {
-                tsml.next = planet_head
-                planet_head = tsml
-            } else {
-                var prev: Planetismal = planet_head!!
-                var curr = planet_head!!.next
-                while (curr != null && curr.orbitalAxis < tsml.orbitalAxis) {
-                    prev = curr
-                    curr = curr.next
-                }
-                tsml.next = curr
-                prev.next = tsml
-            }
-        }
-    }
-
-    fun PrintPlanets(out: PrintStream, planets: List<Planetismal>) {
+    fun PrintPlanets(out: PrintStream, planets: Sequence<Planetismal>) {
         planets.forEach { it.Print(out) }
     }
 
     companion object {
-
-        // Converts a list of planets into a Vector.  The planets in the Vector
-        // still contain the links but they aren't accessible to outside classes.
-        internal fun PlanetArray(head: Planetismal?) = generateSequence(head, { it.next }).toList()
 
         @JvmStatic fun main(args: Array<String>) {
             val gen = Accrete()
