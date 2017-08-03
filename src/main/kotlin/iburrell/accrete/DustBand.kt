@@ -16,11 +16,12 @@ package iburrell.accrete
  * internals are exposed for manipulation.
 
  */
-data class DustBand constructor(var inner: Double, // inner edge (in AU)
-                                var outer: Double, // outer edge (in AU)
-                                var dust: Boolean = true, // dust present
-                                var gas: Boolean = true, // gas present
-                                var next: DustBand? = null
+data class DustBand constructor(
+        var inner: Double, // inner edge (in AU)
+        var outer: Double, // outer edge (in AU)
+        var dust: Boolean = true, // dust present
+        var gas: Boolean = true, // gas present
+        var next: DustBand? = null
 )
 
 

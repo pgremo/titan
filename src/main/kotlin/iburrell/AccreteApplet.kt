@@ -123,7 +123,7 @@ class AccreteApplet : Applet(), Runnable {
             val app = AccreteApplet()
             app.standalone = true
 
-            val frame = AppletFrame(app, 721, 241, "Accrete")
+            AppletFrame(app, 721, 241, "Accrete")
 
         }
     }

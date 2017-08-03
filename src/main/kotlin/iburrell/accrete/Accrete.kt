@@ -31,7 +31,10 @@
 
 package iburrell.accrete
 
-import java.io.PrintStream
+import iburrell.accrete.DoleParams.ECCENTRICITY_COEFF
+import iburrell.util.nextDouble
+import java.util.*
+import java.util.concurrent.ThreadLocalRandom
 
 /**
 
@@ -41,8 +44,10 @@ import java.io.PrintStream
  * using DistributePlanets.
 
  */
-class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in Solar masses
-                                        internal var stellar_luminosity: Double = Astro.Luminosity(stellar_mass)  // in Solar luminsoities
+class Accrete constructor(
+        internal var stellar_mass: Double = 1.0, // in Solar masses
+        internal var stellar_luminosity: Double = Astro.Luminosity(stellar_mass), // in Solar luminsoities
+        var random: Random = ThreadLocalRandom.current()
 ) {
     internal var inner_bound: Double = 0.toDouble()
     internal var outer_bound: Double = 0.toDouble()    // in AU
@@ -83,10 +88,8 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
     fun DistributePlanets(): Sequence<Planetismal> {
         dust_head = DustBand(inner_dust, outer_dust)
 
-        var dust_left = true
-        while (dust_left) {
-            val tsml = Planetismal.RandomPlanetismal(inner_bound,
-                    outer_bound)
+        while (CheckDustLeft()) {
+            val tsml = Planetismal(random.nextDouble(inner_bound, outer_bound), 1.0 - Math.pow(random.nextDouble(), ECCENTRICITY_COEFF))
 
             dust_density = DoleParams.DustDensity(stellar_mass, tsml.orbitalAxis)
             crit_mass = tsml.CriticalMass(stellar_luminosity)
@@ -96,21 +99,16 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
             if (mass != 0.0 && mass != Planetismal.PROTOPLANET_MASS) {
                 if (mass >= crit_mass)
                     tsml.isGasGiant = true
-                UpdateDustLanes(tsml.InnerSweptLimit(),
-                        tsml.OuterSweptLimit(), tsml.isGasGiant)
-                dust_left = CheckDustLeft()
+                UpdateDustLanes(tsml.InnerSweptLimit(), tsml.OuterSweptLimit(), tsml.isGasGiant)
                 CompressDustLanes()
 
                 if (!CoalescePlanetismals(tsml)) {
                     planets.add(tsml)
                 }
-
             }
-
         }
 
         return planets.asSequence()
-
     }
 
     /**
@@ -123,62 +121,42 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
         var new_mass = nucleus.massSolar
         do {
             nucleus.massSolar = new_mass
-            new_mass = 0.0
-            var curr = dust_head
-            while (curr != null) {
-                new_mass += CollectDust(nucleus, curr)
-                curr = curr.next
-            }
+            new_mass = generateSequence(dust_head, DustBand::next).fold(0.0) { acc, it -> acc + CollectDust(nucleus, it) }
         } while (new_mass - nucleus.massSolar > 0.0001 * nucleus.massSolar)
         nucleus.massSolar = new_mass
         return nucleus.massSolar
     }
-
 
     /**
      * Returns the amount of dust and gas collected from the single
      * dust band by the nucleus.  Returns 0.0 if no dust can be swept
      * from the band
      */
-    internal fun CollectDust(nucleus: Planetismal, band: DustBand?): Double {
-        if (band == null)
-            return 0.0
-
-        var swept_inner = nucleus.InnerSweptLimit()
-        val swept_outer = nucleus.OuterSweptLimit()
-
-        if (swept_inner < 0.0)
-            swept_inner = 0.0
-        if (band.outer <= swept_inner || band.inner >= swept_outer)
-            return 0.0
+    internal fun CollectDust(nucleus: Planetismal, band: DustBand): Double {
         if (!band.dust)
             return 0.0
 
+        val swept_inner = Math.max(0.0, nucleus.InnerSweptLimit())
+        val swept_outer = nucleus.OuterSweptLimit()
+
+        if (band.outer <= swept_inner || band.inner >= swept_outer)
+            return 0.0
+
         val dust_density = this.dust_density
-        val mass_density = DoleParams.MassDensity(dust_density, crit_mass,
-                nucleus.massSolar)
-        val density = if (!band.gas || nucleus.massSolar < crit_mass)
-            dust_density
-        else
-            mass_density
+        val mass_density = DoleParams.MassDensity(dust_density, crit_mass, nucleus.massSolar)
+        val density = if (!band.gas || nucleus.massSolar < crit_mass) dust_density else mass_density
 
         val swept_width = swept_outer - swept_inner
-        var outside = swept_outer - band.outer
-        if (outside < 0.0)
-            outside = 0.0
-        var inside = band.inner - swept_inner
-        if (inside < 0.0)
-            inside = 0.0
+        val outside = Math.max(0.0, swept_outer - band.outer)
+        val inside = Math.max(0.0, band.inner - swept_inner)
 
         val width = swept_width - outside - inside
-        val term1 = 4.0 * Math.PI * nucleus.orbitalAxis * nucleus.orbitalAxis
+        val term1 = 4.0 * Math.PI * Math.pow(nucleus.orbitalAxis, 2.0)
         val term2 = 1.0 - nucleus.eccentricity * (outside - inside) / swept_width
         val volume = term1 * nucleus.ReducedMargin() * width * term2
 
         return volume * density
-
     }
-
 
     /**
      * Updates the dust lanes covered by the given range by splitting
@@ -188,21 +166,18 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
         var curr = dust_head
         while (curr != null) {
             val new_gas = curr.gas && !used_gas
-            val first: DustBand
-            val second: DustBand
             var next: DustBand = curr
 
-            // Case 1: Wide
             if (curr.inner < min && curr.outer > max) {
-                first = DustBand(min, max, false, new_gas)
-                second = DustBand(max, curr.outer, curr.dust, curr.gas)
+                val first = DustBand(min, max, false, new_gas)
+                val second = DustBand(max, curr.outer, curr.dust, curr.gas)
                 first.next = second
                 second.next = curr.next
                 curr.next = first
                 curr.outer = min
                 next = second
             } else if (curr.inner < max && curr.outer > max) {
-                first = DustBand(max, curr.outer, curr.dust, curr.gas)
+                val first = DustBand(max, curr.outer, curr.dust, curr.gas)
                 first.next = curr.next
                 curr.next = first
                 curr.outer = max
@@ -210,7 +185,7 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
                 curr.gas = new_gas
                 next = first
             } else if (curr.inner < min && curr.outer > min) {
-                first = DustBand(min, curr.outer, false, new_gas)
+                val first = DustBand(min, curr.outer, false, new_gas)
                 first.next = curr.next
                 curr.next = first
                 curr.outer = min
@@ -221,42 +196,26 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
                 next = curr
             } else if (curr.inner > max || curr.outer < min) {
                 next = curr
-            }// Case 5: Not
-            // Case 4: Narrow
-            // Case 3: In
-            // Case 2: Out
+            }
             curr = next
             curr = curr.next
         }
     }
 
-
     /**
      * Checks if there is any dust remaining in any bands inside the
      * bounds where planets can form.
      */
-    internal fun CheckDustLeft(): Boolean {
-        var dust_left = false
-        var curr = dust_head
-        while (curr != null) {
-            // check if band has dust left
-            if (curr.dust && curr.outer >= inner_bound && curr.inner <= outer_bound) {
-                dust_left = true
-            }
-            curr = curr.next
-        }
-        return dust_left
-    }
-
+    internal fun CheckDustLeft() = generateSequence(dust_head, DustBand::next)
+            .any { it.dust && it.outer >= inner_bound && it.inner <= outer_bound }
 
     /**
      * Compresses adjacent lanes that have the same status.
      */
     internal fun CompressDustLanes() {
-        var next: DustBand?
         var curr = dust_head
         while (curr != null) {
-            next = curr.next
+            var next = curr.next
             if (next != null && curr.dust == next.dust && curr.gas == next.gas) {
                 curr.outer = next.outer
                 curr.next = next.next
@@ -265,7 +224,6 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
             curr = next
         }
     }
-
 
     /**
      * Searches the existing planet list for any that overlap with the
@@ -293,7 +251,6 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
         return false
     }
 
-
     /**
      * Coalesces two planet together.  The resulting planet is saved
      * back into the first one (which is assumed to be the one present
@@ -311,22 +268,10 @@ class Accrete @JvmOverloads constructor(internal var stellar_mass: Double, // in
         a.orbitalAxis = new_axis
         a.eccentricity = new_eccn
         a.isGasGiant = a.isGasGiant || b.isGasGiant
-        //AccreteDust(a);
     }
+}
 
-
-    fun PrintPlanets(out: PrintStream, planets: Sequence<Planetismal>) {
-        planets.forEach { it.Print(out) }
-    }
-
-    companion object {
-
-        @JvmStatic fun main(args: Array<String>) {
-            val gen = Accrete()
-            val pl = gen.DistributePlanets()
-            gen.PrintPlanets(System.out, pl)
-        }
-    }
-
+fun main(args: Array<String>) {
+    Accrete().apply { DistributePlanets().forEach { println(it) } }
 }
 

@@ -26,12 +26,6 @@ object Astro {
     // Returns the calculated stellar luminosity (in solar luminosity
     // units) for the star of the given star mass (in solar masses).
     // It is only accurate for stars with masses close to that of the Sun.
-    fun Luminosity(mass: Double): Double {
-        val n: Double = if (mass < 1.0)
-            1.75 * (mass - 0.1) + 3.325
-        else
-            0.5 * (2.0 - mass) + 4.4
-        return Math.pow(mass, n)
-    }
+    fun Luminosity(mass: Double) = Math.pow(mass, if (mass < 1.0) 1.75 * (mass - 0.1) + 3.325 else 0.5 * (2.0 - mass) + 4.4)
 
 }
