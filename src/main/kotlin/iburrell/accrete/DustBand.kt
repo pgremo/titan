@@ -6,22 +6,12 @@
 
 package iburrell.accrete
 
-/**
-
- * Stores the data for a band of dust of gas.  Contains the inner and
- * outer edge, and whether it has dust or gas present.  Has a pointer
- * to maintain the list of bands.
-
- * The list of DustBands is maintained by the Accrete class; the
- * internals are exposed for manipulation.
-
- */
-data class DustBand constructor(
-        var inner: Double, // inner edge (in AU)
-        var outer: Double, // outer edge (in AU)
-        var dust: Boolean = true, // dust present
-        var gas: Boolean = true, // gas present
+data class DustBand(
+        override var start: Double,
+        override var endInclusive: Double,
+        var dust: Boolean = true,
+        var gas: Boolean = true,
         var next: DustBand? = null
-)
+) : ClosedRange<Double>
 
 

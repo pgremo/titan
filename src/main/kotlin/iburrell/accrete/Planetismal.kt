@@ -18,7 +18,7 @@ package iburrell.accrete
  * Outside clients use the accessors.
 
  */
-data class Planetismal internal constructor(
+data class Planetismal(
         var orbitalAxis: Double,
         var eccentricity: Double,
         var massSolar: Double = PROTOPLANET_MASS,
@@ -51,5 +51,4 @@ data class Planetismal internal constructor(
         internal val PROTOPLANET_MASS = 1.0E-15 // units of solar masses
 
     }
-
 }

@@ -12,10 +12,9 @@ object ChannelDeserializerSpek : Spek({
     given("Accrete with a specific random seed") {
         val accrete = Accrete(1.0, 1.0, Random(4))
         on("should generate planets") {
-            val planets: Sequence<Planetismal> = accrete.DistributePlanets()
-            planets.forEach { println(it) }
+            val actual: List<Planetismal> = accrete.DistributePlanets()
             it("that are consistent") {
-                val expected = sequenceOf(
+                val expected = listOf(
                         Planetismal(orbitalAxis = 0.3346366573668492, eccentricity = 0.14332718614182327, massSolar = 1.0707205393334508E-7, isGasGiant = false),
                         Planetismal(orbitalAxis = 0.42982771655091934, eccentricity = 0.03842074164406584, massSolar = 9.309289377425137E-8, isGasGiant = false),
                         Planetismal(orbitalAxis = 0.5148369396600687, eccentricity = 0.029394920756592113, massSolar = 6.087609463130495E-8, isGasGiant = false),
@@ -28,7 +27,7 @@ object ChannelDeserializerSpek : Spek({
                         Planetismal(orbitalAxis = 37.36765010562492, eccentricity = 0.19297749374197157, massSolar = 3.1567043252198183E-6, isGasGiant = true),
                         Planetismal(orbitalAxis = 46.70675680698262, eccentricity = 0.09914286361116732, massSolar = 2.603019708382757E-7, isGasGiant = false)
                 )
-                planets.toList() `should equal` expected.toList()
+                actual `should equal` expected
             }
         }
     }
