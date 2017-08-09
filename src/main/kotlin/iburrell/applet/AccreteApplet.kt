@@ -1,4 +1,4 @@
-package iburrell
+package iburrell.applet
 
 // Author: Ian Burrell  <iburrell@leland.stanford.edu>
 // Created: 1997/01/17
@@ -8,7 +8,6 @@ package iburrell
 
 import iburrell.accrete.Accrete
 import iburrell.accrete.Planetismal
-import iburrell.gui.AppletFrame
 import java.applet.Applet
 import java.awt.Color
 import java.awt.Graphics
@@ -32,7 +31,7 @@ class AccreteApplet : Applet(), Runnable {
     }
 
     override fun run() {
-        planets = gen!!.DistributePlanets()
+        planets = gen!!.generate()
         repaint()
     }
 

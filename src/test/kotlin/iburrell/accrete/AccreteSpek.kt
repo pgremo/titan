@@ -8,11 +8,11 @@ import org.jetbrains.spek.api.dsl.on
 import java.util.*
 
 
-object ChannelDeserializerSpek : Spek({
+object AccreteSpek : Spek({
     given("Accrete with a specific random seed") {
         val accrete = Accrete(1.0, 1.0, Random(4))
         on("should generate planets") {
-            val actual: List<Planetismal> = accrete.DistributePlanets()
+            val actual: List<Planetismal> = accrete.generate()
             it("that are consistent") {
                 val expected = listOf(
                         Planetismal(orbitalAxis = 0.3346366573668492, eccentricity = 0.14332718614182327, massSolar = 1.0707205393334508E-7, isGasGiant = false),
@@ -22,10 +22,9 @@ object ChannelDeserializerSpek : Spek({
                         Planetismal(orbitalAxis = 1.515888157324751, eccentricity = 2.9895092978937665E-4, massSolar = 5.567364484664794E-6, isGasGiant = false),
                         Planetismal(orbitalAxis = 4.195872392776982, eccentricity = 0.24770000399717818, massSolar = 0.0021836540205658235, isGasGiant = true),
                         Planetismal(orbitalAxis = 7.81623547606845, eccentricity = 0.006019730377180288, massSolar = 8.791987213776919E-5, isGasGiant = true),
-                        Planetismal(orbitalAxis = 14.236850899757643, eccentricity = 0.10696270613599701, massSolar = 1.2421895021042976E-7, isGasGiant = false),
-                        Planetismal(orbitalAxis = 16.507109168232027, eccentricity = 0.021752636610588905, massSolar = 4.808392875714237E-5, isGasGiant = true),
-                        Planetismal(orbitalAxis = 37.36765010562492, eccentricity = 0.19297749374197157, massSolar = 3.1567043252198183E-6, isGasGiant = true),
-                        Planetismal(orbitalAxis = 46.70675680698262, eccentricity = 0.09914286361116732, massSolar = 2.603019708382757E-7, isGasGiant = false)
+                        Planetismal(orbitalAxis = 16.500329298482896, eccentricity = 0.0213595484466494, massSolar = 4.8208147707352795E-5, isGasGiant = true),
+                        Planetismal(orbitalAxis = 37.56747530273328, eccentricity = 0.18987173644537275, massSolar = 3.2304234197568315E-6, isGasGiant = true),
+                        Planetismal(orbitalAxis = 45.95477381384603, eccentricity = 0.029308108983233994, massSolar = 1.865828763012627E-7, isGasGiant = false)
                 )
                 actual `should equal` expected
             }

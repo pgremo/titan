@@ -28,23 +28,37 @@ data class Planetismal(
     val massEarth: Double
         get() = massSolar * Astro.SOLAR_MASS_EARTH_MASS
 
-    internal fun PerihelionDistance() = DoleParams.PerihelionDistance(orbitalAxis, eccentricity)
+    internal val PerihelionDistance: Double
+        get() = DoleParams.PerihelionDistance(orbitalAxis, eccentricity)
 
-    internal fun AphelionDistance() = DoleParams.AphelionDistance(orbitalAxis, eccentricity)
+    internal val AphelionDistance: Double
+        get() = DoleParams.AphelionDistance(orbitalAxis, eccentricity)
 
-    internal fun ReducedMass() = DoleParams.ReducedMass(massSolar)
+    internal val ReducedMass: Double
+        get() = DoleParams.ReducedMass(massSolar)
 
-    internal fun ReducedMargin() = DoleParams.ReducedMargin(massSolar)
+    internal val reducedMargin: Double
+        get() = DoleParams.ReducedMargin(massSolar)
 
-    internal fun InnerEffectLimit() = DoleParams.InnerEffectLimit(orbitalAxis, eccentricity, ReducedMargin())
+    internal val effectLimit: ClosedRange<Double>
+        get() = innerEffectLimit.rangeTo(outerEffectLimit)
 
-    internal fun OuterEffectLimit() = DoleParams.OuterEffectLimit(orbitalAxis, eccentricity, ReducedMargin())
+    internal val innerEffectLimit: Double
+        get() = DoleParams.InnerEffectLimit(orbitalAxis, eccentricity, reducedMargin)
 
-    internal fun InnerSweptLimit() = DoleParams.InnerSweptLimit(orbitalAxis, eccentricity, ReducedMargin())
+    internal val outerEffectLimit: Double
+        get() = DoleParams.OuterEffectLimit(orbitalAxis, eccentricity, reducedMargin)
 
-    internal fun OuterSweptLimit() = DoleParams.OuterSweptLimit(orbitalAxis, eccentricity, ReducedMargin())
+    internal val sweptLimit: ClosedRange<Double>
+        get() = innerSweptLimit.rangeTo(outerSweptLimit)
 
-    internal fun CriticalMass(luminosity: Double) = DoleParams.CriticalMass(orbitalAxis, eccentricity, luminosity)
+    internal val innerSweptLimit: Double
+        get() = DoleParams.InnerSweptLimit(orbitalAxis, eccentricity, reducedMargin)
+
+    internal val outerSweptLimit: Double
+        get() = DoleParams.OuterSweptLimit(orbitalAxis, eccentricity, reducedMargin)
+
+    internal fun criticalMass(luminosity: Double) = DoleParams.CriticalMass(orbitalAxis, eccentricity, luminosity)
 
     companion object {
 

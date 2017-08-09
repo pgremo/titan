@@ -4,7 +4,7 @@
 
 // Copyright 1996 Ian Burrell
 
-package iburrell.gui
+package iburrell.applet
 
 import java.awt.*
 

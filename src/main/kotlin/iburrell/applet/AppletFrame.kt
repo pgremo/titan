@@ -1,4 +1,4 @@
-package iburrell.gui
+package iburrell.applet
 
 import java.applet.Applet
 import java.applet.AppletContext

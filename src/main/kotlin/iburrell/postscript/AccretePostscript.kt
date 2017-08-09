@@ -20,7 +20,7 @@ class AccretePostscript : Postscript("accrete.ps") {
         begin(1)
         logscale("AU")
 
-        val system = gen.DistributePlanets()
+        val system = gen.generate()
 
         system.forEach { curr ->
             val au = log10(curr.orbitalAxis)
