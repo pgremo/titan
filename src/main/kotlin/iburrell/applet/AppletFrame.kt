@@ -25,8 +25,6 @@ class AppletFrame(applet: Applet, width: Int, height: Int, title: String) : Exit
         applet.start()
     }
 
-    constructor(a: Applet, x: Int, y: Int) : this(a, x, y, a.javaClass.name) {}
-
     // AppletStub methods
     override fun isActive(): Boolean {
         return true

@@ -10,7 +10,7 @@ import iburrell.accrete.Accrete
 
 class AccretePostscript : Postscript("accrete.ps") {
 
-    internal var gen: Accrete = Accrete()
+    private var gen: Accrete = Accrete()
 
     init {
         window(-1.0, -1.0, 2.0, 1.0)
@@ -22,16 +22,16 @@ class AccretePostscript : Postscript("accrete.ps") {
 
         val system = gen.generate()
 
-        system.forEach { curr ->
-            val au = log10(curr.orbitalAxis)
-            val r = Math.pow(curr.massSolar, 1.0 / 3.0)
-            circle(au, 0.0, r, curr.isGasGiant)
+        system.forEach { (orbitalAxis, _, massSolar, isGasGiant) ->
+            val au = log10(orbitalAxis)
+            val r = Math.pow(massSolar, 1.0 / 3.0)
+            circle(au, 0.0, r, isGasGiant)
         }
         showpage()
         end()
     }
 
-    @JvmOverloads internal fun logscale(xlabel: String = "", ylabel: String = "") {
+    private fun logscale(xlabel: String = "", ylabel: String = "") {
         line(-1.0, -1.0, 3.0, -1.0)
         line(3.0, -1.0, 3.0, 1.0)
         line(3.0, 1.0, 3.0, -1.0)

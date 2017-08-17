@@ -11,14 +11,14 @@ import java.io.PrintStream
 
 open class Postscript(psfile: String) {
 
-    internal var page = 0
-    internal var base = 50.0
-    internal var xscale = 1.0
-    internal var yscale = 1.0
-    internal var xoff = 0.0
-    internal var yoff = 0.0
+    private var page = 0
+    private var base = 50.0
+    private var xscale = 1.0
+    private var yscale = 1.0
+    private var xoff = 0.0
+    private var yoff = 0.0
 
-    internal var out: PrintStream = PrintStream(FileOutputStream(psfile))
+    private var out: PrintStream = PrintStream(FileOutputStream(psfile))
 
     protected fun begin(numpage: Int) {
         out.println("%!PS-Adobe-2.1")
@@ -36,7 +36,7 @@ open class Postscript(psfile: String) {
         out.println("end")
     }
 
-    @JvmOverloads protected fun beginpage(pg: Int = ++page) {
+    private fun beginpage(pg: Int = ++page) {
         out.println("%%Page: $pg $pg")
         out.println((xoff + base).toString() + " " + yoff + base + " translate")
         out.println(xscale.toString() + " " + yscale + " " + " scale")

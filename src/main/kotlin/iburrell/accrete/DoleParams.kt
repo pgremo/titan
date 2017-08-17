@@ -50,7 +50,7 @@ internal object DoleParams {
     fun OuterSweptLimit(a: Double, e: Double, m: Double) = HighBound(AphelionDistance(a, e) * (1.0 + m))
 
     val K = 50.0       // gas/dust ratio
-    val DUST_DENSITY_COEFF = 1.5E-3 // A in Dole's paper
+    val A = 1.5E-3     // A in Dole's paper
     val ALPHA = 5.0    // Used in density calcs
     val N = 3.0        // Used in density calcs
 
@@ -58,7 +58,7 @@ internal object DoleParams {
      * Calculates the density of dust at the given radius from the
      * star.
      */
-    fun DustDensity(stellar_mass: Double, orbital_radius: Double) = DUST_DENSITY_COEFF * Math.sqrt(stellar_mass) * Math.exp(-ALPHA * Math.pow(orbital_radius, 1.0 / N))
+    fun DustDensity(stellar_mass: Double, r: Double) = A * Math.sqrt(stellar_mass) * Math.exp(-ALPHA * Math.pow(r, 1.0 / N))
 
     /**
      * Calculates the total density of dust and gas.  Used for planets
@@ -68,7 +68,7 @@ internal object DoleParams {
 
     fun MassDensity(dust_density: Double, critical_mass: Double, mass: Double) = K * dust_density / (1.0 + Math.sqrt(critical_mass / mass) * (K - 1.0))
 
-    val ECCENTRICITY_COEFF = 0.077
+    val Q = 0.077
 
     fun ScaleCubeRootMass(scale: Double, mass: Double) = scale * Math.pow(mass, 1.0 / 3.0)
 

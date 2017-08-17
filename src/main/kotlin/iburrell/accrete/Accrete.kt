@@ -31,7 +31,7 @@
 
 package iburrell.accrete
 
-import iburrell.accrete.DoleParams.ECCENTRICITY_COEFF
+import iburrell.accrete.DoleParams.Q
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 
@@ -44,12 +44,12 @@ import java.util.concurrent.ThreadLocalRandom
 
  */
 class Accrete constructor(
-        internal var stellar_mass: Double = 1.0, // in Solar masses
-        internal var stellar_luminosity: Double = Astro.Luminosity(stellar_mass), // in Solar luminsoities
-        var random: Random = ThreadLocalRandom.current()
+        private var stellar_mass: Double = 1.0, // in Solar masses
+        private var stellar_luminosity: Double = Astro.Luminosity(stellar_mass), // in Solar luminsoities
+        private var random: Random = ThreadLocalRandom.current()
 ) {
 
-    internal val bounds: ClosedRange<Double> = DoleParams.InnermostPlanet(stellar_mass).rangeTo(DoleParams.OutermostPlanet(stellar_mass))
+    private val bounds: ClosedRange<Double> = 0.3..50.0
 
     /**
      * Creates a Accretion class for the star of the given size.
@@ -60,8 +60,8 @@ class Accrete constructor(
 
     // values that only depend on radius and are cached for each
     // nucleus
-    internal var crit_mass: Double = 0.toDouble()
-    internal var dust_density: Double = 0.toDouble()
+    private var crit_mass: Double = 0.toDouble()
+    private var dust_density: Double = 0.toDouble()
 
     /**
 
@@ -76,9 +76,10 @@ class Accrete constructor(
         val dust_head = DustBand(DoleParams.InnerDustLimit(stellar_mass), DoleParams.OuterDustLimit(stellar_mass))
 
         while (isDustLeft(dust_head)) {
-            val tsml = Planetismal(random.nextDouble(bounds), 1.0 - Math.pow(random.nextDouble(), ECCENTRICITY_COEFF))
+            val orbitalAxis = random.nextDouble(bounds)
+            val tsml = Planetismal(orbitalAxis, 1.0 - Math.pow(1.0 - random.nextDouble(), Q))
 
-            dust_density = DoleParams.DustDensity(stellar_mass, tsml.orbitalAxis)
+            dust_density = DoleParams.DustDensity(stellar_mass, orbitalAxis)
             crit_mass = tsml.criticalMass(stellar_luminosity)
 
             val mass = accrete(dust_head, tsml)
@@ -87,9 +88,7 @@ class Accrete constructor(
                 tsml.isGasGiant = mass >= crit_mass
                 updateCloud(dust_head, tsml.innerSweptLimit, tsml.outerSweptLimit, tsml.isGasGiant)
                 compressCloud(dust_head)
-
-                if (!coalesce(planets, tsml))
-                    planets.add(tsml)
+                if (!coalesce(planets, tsml)) planets.add(tsml)
             }
         }
 
@@ -119,15 +118,16 @@ class Accrete constructor(
      * dust band by the nucleus.  Returns 0.0 if no dust can be swept
      * from the band
      */
-    internal fun collect(nucleus: Planetismal, band: DustBand): Double {
+    private fun collect(nucleus: Planetismal, band: DustBand): Double {
         if (!band.dust)
             return 0.0
 
         if (!band.intersects(nucleus.sweptLimit))
             return 0.0
 
-        val mass_density = DoleParams.MassDensity(dust_density, crit_mass, nucleus.massSolar)
-        val density = if (!band.gas || nucleus.massSolar < crit_mass) dust_density else mass_density
+        var density = dust_density
+        if (band.gas && nucleus.massSolar >= crit_mass)
+            density *= DoleParams.K
 
         val swept_inner = Math.max(0.0, nucleus.innerSweptLimit)
         val swept_outer = nucleus.outerSweptLimit
@@ -147,7 +147,7 @@ class Accrete constructor(
      * Updates the dust lanes covered by the given range by splitting
      * if necessary and updating the dust and gas present fields.
      */
-    internal fun updateCloud(head: DustBand, min: Double, max: Double, used_gas: Boolean) {
+    private fun updateCloud(head: DustBand, min: Double, max: Double, used_gas: Boolean) {
         var band: DustBand? = head
         while (band != null) {
             val hasGas = band.gas && !used_gas
@@ -181,13 +181,13 @@ class Accrete constructor(
      * Checks if there is any dust remaining in any bands inside the
      * bounds where planets can form.
      */
-    internal fun isDustLeft(head: DustBand) = generateSequence(head, DustBand::next)
+    private fun isDustLeft(head: DustBand) = generateSequence(head, DustBand::next)
             .any { it.dust && it.intersects(bounds) }
 
     /**
      * Compresses adjacent lanes that have the same status.
      */
-    internal fun compressCloud(head: DustBand) {
+    private fun compressCloud(head: DustBand) {
         var band: DustBand? = head
         while (band != null) {
             var next = band.next
@@ -205,35 +205,17 @@ class Accrete constructor(
      * new planetismal.  If there is an overlap their effect radii,
      * the two planets are coalesced into one.
      */
-    internal fun coalesce(planets: SortedSet<Planetismal>, nucleus: Planetismal): Boolean {
+    private fun coalesce(planets: SortedSet<Planetismal>, nucleus: Planetismal): Boolean {
         val x = nucleus.effectLimit
         return planets
                 .firstOrNull {
                     x.intersects(it.effectLimit)
                 }
                 ?.apply {
-                    merge(this, nucleus)
+                    merge(nucleus)
                 } != null
     }
 
-    /**
-     * Coalesces two planet together.  The resulting planet is saved
-     * back into the first one (which is assumed to be the one present
-     * in the planet list).
-     */
-    internal fun merge(a: Planetismal, b: Planetismal) {
-        val new_mass = a.massSolar + b.massSolar
-        val new_axis = new_mass / (a.massSolar / a.orbitalAxis + b.massSolar / b.orbitalAxis)
-        val term1 = a.massSolar * Math.sqrt(a.orbitalAxis * (1.0 - a.eccentricity * a.eccentricity))
-        val term2 = b.massSolar * Math.sqrt(b.orbitalAxis * (1.0 - b.eccentricity * b.eccentricity))
-        val term3 = (term1 + term2) / (new_mass * Math.sqrt(new_axis))
-        val term4 = 1.0 - term3 * term3
-        val new_eccn = Math.sqrt(Math.abs(term4))
-        a.massSolar = new_mass
-        a.orbitalAxis = new_axis
-        a.eccentricity = new_eccn
-        a.isGasGiant = a.isGasGiant || b.isGasGiant
-    }
 }
 
 fun main(vararg args: String) {

@@ -8,11 +8,7 @@ package iburrell.applet
 
 import java.awt.*
 
-open class ExitableFrame : Frame {
-
-    constructor() : super() {}
-
-    constructor(t: String) : super(t) {}
+open class ExitableFrame(t: String) : Frame(t) {
 
     public override fun processEvent(e: AWTEvent?) {
         if (e!!.id == Event.WINDOW_DESTROY)
