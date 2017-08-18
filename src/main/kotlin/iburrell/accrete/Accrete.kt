@@ -156,24 +156,23 @@ class Accrete constructor(
                     val right = band.copy(start = max)
                     val middle = DustBand(min, max, false, hasGas, right)
                     band.apply { next = middle; endInclusive = min }
-                    right
+                    null
                 }
                 band.start < max && band.endInclusive > max -> {
-                    val right = band.copy(start = max, next = band.next)
+                    val right = band.copy(start = max)
                     band.apply { next = right; endInclusive = max; dust = false; gas = hasGas }
-                    right
+                    null
                 }
                 band.start < min && band.endInclusive > min -> {
                     val right = band.copy(start = min, dust = false, gas = hasGas)
                     band.apply { next = right; endInclusive = min }
-                    right.next
+                    right
                 }
                 band.start >= min && band.endInclusive <= max -> {
                     band.apply { dust = false; gas = hasGas }
-                    band.next
                 }
-                else -> band.next
-            }
+                else -> band
+            }?.next
         }
     }
 
