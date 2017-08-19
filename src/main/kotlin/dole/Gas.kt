@@ -44,76 +44,45 @@
  */
 
 /*
- * DoleConstants.java
+ * Gas.java
  *
- * Created on December 26, 2005, 5:11 PM
- *
+ * Created on December 21, 2005, 10:23 AM
  */
-package dole;
+package dole
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
- * Constants used by the Dole Accretion class.
+ * Bean class describing a gas
  *
  * @author martin
- * @version $Id: DoleConstants.java,v 1.2 2006-07-06 06:58:35 martin Exp $
+ * @version $Id: Gas.java,v 1.4 2006-07-06 06:58:33 martin Exp $
  */
-public class DoleConstants
-{
-    /** Our logging object */
-    private static Log log = LogFactory.getLog(DoleConstants.class);
+/** Creates a new instance of Gas  */
+class Gas {
 
-    /** Coeff. of cloud density (solar masses / AU**3) */
-    public static final double AO = 0.0015;
+    /**
+     * Holds value of property surfacePressure.
+     */
+    /**
+     * Getter for property pressure.
+     * @return Value of property pressure.
+     */
+    /**
+     * Setter for property surfacePressure.
+     * @param surfacePressure New value of property surfacePressure.
+     */
+    var surfacePressure: Double = 0.toDouble()
 
-    /** Cloud density parameter                        */
-    public static final double ALPHA = 5.0;
-
-    /** Cloud density parameter                        */
-    public static final double GAMMA = 0.33;
-
-    /** Ratio of overall density to density of dust    */
-    public static final double K = 50;
-
-    /** Eccentricity of cloud particles                */
-    public static final double W = 0.20;
-
-    /** Nuclei mass (solar masses)                     */
-    public static final double M0 = 1E-15;
-
-    /** Critical mass paramter (solar masses)          */
-    public static final double B = 1.2E-5;
-
-    /** Gas capture parameter                          */
-    public static final double BETA = 0.5;
-
-    /** Minimum orbital radius (AU) */
-    public static final double MINRADIUS = 0.3;
-
-    /** Minimum orbital radius (AU) */
-    public static final double MAXRADIUS = 50.0;
-
-    /** Maximum eccentricity of dust particles */
-    public static final double MAX_ECCENTRICITY = 0.20;
-
-    // not currently used
-    //public static final int GAS = 1;
-
-    // constants from planetstats
-
-    /** Mass of the Earth in KG */
-    public static final double MASS_OF_EARTH = 5.98E24;
-
-    /** Gravitational constant G = 6.67E-11,   nt - m**2 / kg**2 */
-    public static final double G = 6.67E-11;
-
-    /** Constant used in planetary temperature calcluations J / mol K  */
-    public static final double k = 5.67E-8;
-
-    /** Creates a new instance of DoleConstants */
-    public DoleConstants()
-    {
-    }
+    /**
+     * Holds value of property element.
+     */
+    /**
+     * Getter for property element.
+     * @return Value of property element.
+     */
+    /**
+     * Setter for property element.
+     * @param element New value of property element.
+     */
+    var element: ChemTable? = null
 }

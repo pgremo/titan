@@ -49,7 +49,7 @@
  * Created on December 21, 2005, 10:44 AM
  *
  */
-package dole;
+package dole
 
 
 /**
@@ -58,74 +58,167 @@ package dole;
  * @author martin
  * @version $Id: ChemTable.java,v 1.4 2006-07-06 06:58:33 martin Exp $
  */
-public class ChemTable
-{
+class ChemTable {
     /**
      * Holds value of property number.
      */
-    private int number;
+    /**
+     * Getter for property number.
+     * @return Value of property number.
+     */
+    /**
+     * Setter for property number.
+     * @param number New value of property number.
+     */
+    var number: Int = 0
 
     /**
      * Holds value of property symbol.
      */
-    private String symbol;
+    /**
+     * Getter for property symbol.
+     * @return Value of property symbol.
+     */
+    /**
+     * Setter for property symbol.
+     * @param symbol New value of property symbol.
+     */
+    var symbol: String? = null
 
     /**
      * Holds value of property htmlSymbol.
      */
-    private String htmlSymbol;
+    /**
+     * Getter for property htmlSymbol.
+     * @return Value of property htmlSymbol.
+     */
+    /**
+     * Setter for property htmlSymbol.
+     * @param htmlSymbol New value of property htmlSymbol.
+     */
+    var htmlSymbol: String? = null
 
     /**
      * Holds value of property weight.
      */
-    private double weight;
+    /**
+     * Getter for property weight.
+     * @return Value of property weight.
+     */
+    /**
+     * Setter for property weight.
+     * @param weight New value of property weight.
+     */
+    var weight: Double = 0.toDouble()
 
     /**
      * Holds value of property meltingPoint.
      */
-    private double meltingPoint;
+    /**
+     * Getter for property meltingPoint.
+     * @return Value of property meltingPoint.
+     */
+    /**
+     * Setter for property meltingPoint.
+     * @param meltingPoint New value of property meltingPoint.
+     */
+    var meltingPoint: Double = 0.toDouble()
 
     /**
      * Holds value of property boilingPoint.
      */
-    private double boilingPoint;
+    /**
+     * Getter for property boilingPoint.
+     * @return Value of property boilingPoint.
+     */
+    /**
+     * Setter for property boilingPoint.
+     * @param boilingPoint New value of property boilingPoint.
+     */
+    var boilingPoint: Double = 0.toDouble()
 
     /**
      * Holds value of property density.
      */
-    private double density;
+    /**
+     * Getter for property density.
+     * @return Value of property density.
+     */
+    /**
+     * Setter for property density.
+     * @param density New value of property density.
+     */
+    var density: Double = 0.toDouble()
 
     /**
      * Holds value of property abunde.
      */
-    private double abunde;
+    /**
+     * Getter for property abunde.
+     * @return Value of property abunde.
+     */
+    /**
+     * Setter for property abunde.
+     * @param abunde New value of property abunde.
+     */
+    var abunde: Double = 0.toDouble()
 
     /**
      * Holds value of property abunds.
      */
-    private double abunds;
+    /**
+     * Getter for property abunds.
+     * @return Value of property abunds.
+     */
+    /**
+     * Setter for property abunds.
+     * @param abunds New value of property abunds.
+     */
+    var abunds: Double = 0.toDouble()
 
     /**
      * Holds value of property reactivity.
      */
-    private double reactivity;
+    /**
+     * Getter for property reactivity.
+     * @return Value of property reactivity.
+     */
+    /**
+     * Setter for property reactivity.
+     * @param reactivity New value of property reactivity.
+     */
+    var reactivity: Double = 0.toDouble()
 
     /**
      * Holds value of property maxIpp.
      */
-    private double maxIpp;
+    /**
+     * Getter for property maxIpp.
+     * @return Value of property maxIpp.
+     */
+    /**
+     * Setter for property maxIpp.
+     * @param maxIpp New value of property maxIpp.
+     */
+    var maxIpp: Double = 0.toDouble()
 
     /**
      * Holds value of property name.
      */
-    private String name;
+    /**
+     * Getter for property name.
+     * @return Value of property name.
+     */
+    /**
+     * Setter for property name.
+     * @param name New value of property name.
+     */
+    var name: String? = null
 
     /**
      * Creates a new instance of ChemTable
      */
-    public ChemTable()
-    {
-    }
+    constructor() {}
 
     /**
      * Creates a new instance of ChemTable
@@ -144,238 +237,21 @@ public class ChemTable
      * @param maxIpp The max allowed inspired partial pressure for this element
      * for a habitable planet
      */
-    public ChemTable(
-        int atomicNumber, String symbol, String html, String name,
-        double atomicWeight, double melt, double boil, double density,
-        double abunde, double abunds, double rea, double maxIpp)
-    {
-        this.number = atomicNumber;
-        this.symbol = symbol;
-        this.htmlSymbol = html;
-        this.name = name;
-        this.weight = atomicWeight;
-        this.meltingPoint = melt;
-        this.boilingPoint = boil;
-        this.density = density;
-        this.abunde = abunde;
-        this.abunds = abunds;
-        this.reactivity = rea;
-        this.maxIpp = maxIpp;
-    }
-
-    /**
-     * Getter for property number.
-     * @return Value of property number.
-     */
-    public int getNumber()
-    {
-        return this.number;
-    }
-
-    /**
-     * Setter for property number.
-     * @param number New value of property number.
-     */
-    public void setNumber(int number)
-    {
-        this.number = number;
-    }
-
-    /**
-     * Getter for property symbol.
-     * @return Value of property symbol.
-     */
-    public String getSymbol()
-    {
-        return this.symbol;
-    }
-
-    /**
-     * Setter for property symbol.
-     * @param symbol New value of property symbol.
-     */
-    public void setSymbol(String symbol)
-    {
-        this.symbol = symbol;
-    }
-
-    /**
-     * Getter for property htmlSymbol.
-     * @return Value of property htmlSymbol.
-     */
-    public String getHtmlSymbol()
-    {
-        return this.htmlSymbol;
-    }
-
-    /**
-     * Setter for property htmlSymbol.
-     * @param htmlSymbol New value of property htmlSymbol.
-     */
-    public void setHtmlSymbol(String htmlSymbol)
-    {
-        this.htmlSymbol = htmlSymbol;
-    }
-
-    /**
-     * Getter for property weight.
-     * @return Value of property weight.
-     */
-    public double getWeight()
-    {
-        return this.weight;
-    }
-
-    /**
-     * Setter for property weight.
-     * @param weight New value of property weight.
-     */
-    public void setWeight(double weight)
-    {
-        this.weight = weight;
-    }
-
-    /**
-     * Getter for property meltingPoint.
-     * @return Value of property meltingPoint.
-     */
-    public double getMeltingPoint()
-    {
-        return this.meltingPoint;
-    }
-
-    /**
-     * Setter for property meltingPoint.
-     * @param meltingPoint New value of property meltingPoint.
-     */
-    public void setMeltingPoint(double meltingPoint)
-    {
-        this.meltingPoint = meltingPoint;
-    }
-
-    /**
-     * Getter for property boilingPoint.
-     * @return Value of property boilingPoint.
-     */
-    public double getBoilingPoint()
-    {
-        return this.boilingPoint;
-    }
-
-    /**
-     * Setter for property boilingPoint.
-     * @param boilingPoint New value of property boilingPoint.
-     */
-    public void setBoilingPoint(double boilingPoint)
-    {
-        this.boilingPoint = boilingPoint;
-    }
-
-    /**
-     * Getter for property density.
-     * @return Value of property density.
-     */
-    public double getDensity()
-    {
-        return this.density;
-    }
-
-    /**
-     * Setter for property density.
-     * @param density New value of property density.
-     */
-    public void setDensity(double density)
-    {
-        this.density = density;
-    }
-
-    /**
-     * Getter for property abunde.
-     * @return Value of property abunde.
-     */
-    public double getAbunde()
-    {
-        return this.abunde;
-    }
-
-    /**
-     * Setter for property abunde.
-     * @param abunde New value of property abunde.
-     */
-    public void setAbunde(double abunde)
-    {
-        this.abunde = abunde;
-    }
-
-    /**
-     * Getter for property abunds.
-     * @return Value of property abunds.
-     */
-    public double getAbunds()
-    {
-        return this.abunds;
-    }
-
-    /**
-     * Setter for property abunds.
-     * @param abunds New value of property abunds.
-     */
-    public void setAbunds(double abunds)
-    {
-        this.abunds = abunds;
-    }
-
-    /**
-     * Getter for property reactivity.
-     * @return Value of property reactivity.
-     */
-    public double getReactivity()
-    {
-        return this.reactivity;
-    }
-
-    /**
-     * Setter for property reactivity.
-     * @param reactivity New value of property reactivity.
-     */
-    public void setReactivity(double reactivity)
-    {
-        this.reactivity = reactivity;
-    }
-
-    /**
-     * Getter for property maxIpp.
-     * @return Value of property maxIpp.
-     */
-    public double getMaxIpp()
-    {
-        return this.maxIpp;
-    }
-
-    /**
-     * Setter for property maxIpp.
-     * @param maxIpp New value of property maxIpp.
-     */
-    public void setMaxIpp(double maxIpp)
-    {
-        this.maxIpp = maxIpp;
-    }
-
-    /**
-     * Getter for property name.
-     * @return Value of property name.
-     */
-    public String getName()
-    {
-        return this.name;
-    }
-
-    /**
-     * Setter for property name.
-     * @param name New value of property name.
-     */
-    public void setName(String name)
-    {
-        this.name = name;
+    constructor(
+            atomicNumber: Int, symbol: String, html: String, name: String,
+            atomicWeight: Double, melt: Double, boil: Double, density: Double,
+            abunde: Double, abunds: Double, rea: Double, maxIpp: Double) {
+        this.number = atomicNumber
+        this.symbol = symbol
+        this.htmlSymbol = html
+        this.name = name
+        this.weight = atomicWeight
+        this.meltingPoint = melt
+        this.boilingPoint = boil
+        this.density = density
+        this.abunde = abunde
+        this.abunds = abunds
+        this.reactivity = rea
+        this.maxIpp = maxIpp
     }
 }

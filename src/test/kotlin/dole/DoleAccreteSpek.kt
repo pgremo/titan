@@ -10,7 +10,7 @@ import kotlin.collections.ArrayList
 
 object DoleAccreteSpek : Spek({
     given("Accrete with a specific random seed") {
-        val utils = MathUtils(Random(4))
+        val utils = MathUtils(Random(1))
 
         val accrete = DoleAccrete(utils)
 
@@ -26,19 +26,19 @@ object DoleAccreteSpek : Spek({
         accrete.createSystem(sun)
 
         on("should generate planets") {
-            val actual: List<Planet> = sun.planets!!
+            val actual: List<Planet> = sun.planets
             it("that are consistent") {
+                println(actual.joinToString(separator = ",\n"))
                 val expected = ArrayList(listOf(
-                        DolePlanetRecord().apply { a = 0.6572224954434809; e = 0.04329162685093463; mass = 3.859717928719281E-6; isGasGiant = false },
-                        DolePlanetRecord().apply { a = 1.0240937233260297; e = 0.031843527533283233; mass = 1.7964491923215231E-6; isGasGiant = false },
-                        DolePlanetRecord().apply { a = 1.3510303471528042; e = 0.03490004324098045; mass = 1.956061209308036E-7; isGasGiant = false },
-                        DolePlanetRecord().apply { a = 1.5259091636154962; e = 0.002965138935140499; mass = 5.710473806946889E-6; isGasGiant = false },
-                        DolePlanetRecord().apply { a = 3.337205573953363; e = 0.0044956244982390925; mass = 6.444052162711049E-4; isGasGiant = true },
-                        DolePlanetRecord().apply { a = 8.117560008743382; e = 0.01821686514301929; mass = 1.7377688367254667E-4; isGasGiant = true },
-                        DolePlanetRecord().apply { a = 12.760707882655453; e = 0.003687757400670122; mass = 5.582708220267491E-5; isGasGiant = true },
-                        DolePlanetRecord().apply { a = 23.10577740897831; e = 0.006764103222307916; mass = 1.2764452493596015E-4; isGasGiant = true },
-                        DolePlanetRecord().apply { a = 41.24869655970253; e = 0.017583557283208262; mass = 1.564471299689972E-6; isGasGiant = true },
-                        DolePlanetRecord().apply { a = 45.85680700022379; e = 4.840385508425582E-5; mass = 5.654622838249816E-8; isGasGiant = false }
+                        DolePlanetRecord().apply { a = 0.3113751815174137; e = 0.03999828648267956; mass = 1.643651194286459E-7; isGasGiant = false },
+                        DolePlanetRecord().apply { a = 0.42386250483222354; e = 0.018198213550807085; mass = 4.763165900327659E-7; isGasGiant = false },
+                        DolePlanetRecord().apply { a = 0.5952289632842835; e = 0.024804932956769665; mass = 1.5480174565079395E-6; isGasGiant = false },
+                        DolePlanetRecord().apply { a = 1.2010286878417895; e = 0.0014835686180887375; mass = 1.2066269240540442E-5; isGasGiant = true },
+                        DolePlanetRecord().apply { a = 1.8344924182083255; e = 0.02856363405524398; mass = 1.0789875794951952E-5; isGasGiant = true },
+                        DolePlanetRecord().apply { a = 3.7083934832989147; e = 0.005686561589768269; mass = 1.6930478692795537E-4; isGasGiant = true },
+                        DolePlanetRecord().apply { a = 8.281859692657306; e = 0.009900058459724637; mass = 1.711609257961245E-4; isGasGiant = true },
+                        DolePlanetRecord().apply { a = 18.395001217667495; e = 4.8144185563087083E-4; mass = 7.159565830198185E-5; isGasGiant = true },
+                        DolePlanetRecord().apply { a = 43.11940427104446; e = 0.0075607994621553765; mass = 1.8009632755850223E-7; isGasGiant = false }
                 ))
                 actual `should equal` expected
             }

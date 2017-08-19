@@ -44,29 +44,96 @@
  */
 
 /*
- * Breathability.java
+ * DustRecord.java
  *
- * Created on 21 December 2005, 20:41
+ * Created on December 21, 2005, 10:39 AM
  */
-package dole;
+package dole
 
 
 /**
- * Enum for breathability types
+ * Bean class that details one dust band
  *
- * @author Martin
- * @version $Id: Breathability.java,v 1.3 2006-07-06 06:58:33 martin Exp $
+ * @author martin
+ * @version $Id: DustRecord.java,v 1.3 2006-07-06 06:58:33 martin Exp $
  */
-public enum Breathability
-{
-    /** Indicates that there is no atmosphere */
-    NONE,
-    /** Indicates that there is a breathable atmosphere */
-    BREATHABLE, 
-    /** Indicates there is an atmosphere but it is unbreathable (e.g. pressure
-     * is too low) */
-    UNBREATHABLE, 
-    /** Indicates that there is an atmosphere but it consists of poisonous
-     * gases */
-    POISONOUS;
+class DustRecord {
+    /**
+     * Holds value of property innerEdge.
+     */
+    /**
+     * Getter for property innerEdge.
+     * @return Value of property innerEdge.
+     */
+    /**
+     * Setter for property innerEdge.
+     * @param innerEdge New value of property innerEdge.
+     */
+    var innerEdge: Double = 0.toDouble()
+
+    /**
+     * Holds value of property outerEdge.
+     */
+    /**
+     * Getter for property outerEdge.
+     * @return Value of property outerEdge.
+     */
+    /**
+     * Setter for property outerEdge.
+     * @param outerEdge New value of property outerEdge.
+     */
+    var outerEdge: Double = 0.toDouble()
+
+    /**
+     * Holds value of property dustPresent.
+     */
+    /**
+     * Getter for property dustPresent.
+     * @return Value of property dustPresent.
+     */
+    /**
+     * Setter for property dustPresent.
+     * @param dustPresent New value of property dustPresent.
+     */
+    var isDustPresent: Boolean = false
+
+    /**
+     * Holds value of property gasPresent.
+     */
+    /**
+     * Getter for property gasPresent.
+     * @return Value of property gasPresent.
+     */
+    /**
+     * Setter for property gasPresent.
+     * @param gasPresent New value of property gasPresent.
+     */
+    var isGasPresent: Boolean = false
+
+    /**
+     * Holds value of property nextDust.
+     */
+    /**
+     * Getter for property nextDust.
+     * @return Value of property nextDust.
+     */
+    /**
+     * Setter for property nextDust.
+     * @param nextDust New value of property nextDust.
+     */
+    var nextDust: DustRecord? = null
+
+    /** Creates a new instance of DustRecord  */
+    constructor() {}
+
+    /**
+     * Creates a new instance of DustRecord
+     *
+     * @param innerEdge The inner radius of the band
+     * @param outerEdge The outer radius of the band
+     */
+    constructor(innerEdge: Double, outerEdge: Double) {
+        this.innerEdge = innerEdge
+        this.outerEdge = outerEdge
+    }
 }

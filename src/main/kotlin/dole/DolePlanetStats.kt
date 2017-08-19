@@ -49,10 +49,9 @@
  * Created on December 27, 2005, 9:33 AM
  *
  */
-package dole;
+package dole
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.LogFactory
 
 /**
  * Planetstat : Compute the physical properties of a planet.
@@ -62,20 +61,16 @@ import org.apache.commons.logging.LogFactory;
  * @author martin
  * @version $Id: DolePlanetStats.java,v 1.3 2006-07-06 06:58:35 martin Exp $
  */
-public class DolePlanetStats
-{
-    /** Our logging object */
-    private static Log log = LogFactory.getLog(DolePlanetStats.class);
+class DolePlanetStats {
 
-    /** The math utility object in use */
-    private MathUtils utils;
+    /** The math utility object in use  */
+    private var utils: MathUtils? = null
 
     // MagicNumber OFF
 
-    /** Creates a new instance of DolePlanetStats */
-    public DolePlanetStats()
-    {
-        this.utils = new MathUtils();
+    /** Creates a new instance of DolePlanetStats  */
+    constructor() {
+        this.utils = MathUtils()
     }
 
     /**
@@ -83,9 +78,8 @@ public class DolePlanetStats
      *
      * @param utils The math utility object to use for random numbers
      */
-    public DolePlanetStats(MathUtils utils)
-    {
-        this.utils = utils;
+    constructor(utils: MathUtils) {
+        this.utils = utils
     }
 
     /**
@@ -98,9 +92,8 @@ public class DolePlanetStats
      * @param radius The distance from the star in AU
      * @return The stellar flux in watts per square metre
      */
-    public double cFlux(double sunLum, double radius)
-    {
-        return ((1400.0 * sunLum) / (radius * radius));
+    fun cFlux(sunLum: Double, radius: Double): Double {
+        return 1400.0 * sunLum / (radius * radius)
     }
 
     /**
@@ -113,9 +106,8 @@ public class DolePlanetStats
      * @param radius The distance from the star in AU
      * @return The planetary black body temperature
      */
-    public double cTemp(double sunLum, double radius)
-    {
-        return (Math.pow(cFlux(sunLum, radius) / (4.0 * DoleConstants.k), 0.25));
+    fun cTemp(sunLum: Double, radius: Double): Double {
+        return Math.pow(cFlux(sunLum, radius) / (4.0 * DoleConstants.R), 0.25)
     }
 
     /**
@@ -126,12 +118,11 @@ public class DolePlanetStats
      * @param radius The planetary radius in KM
      * @return The surface gravity in meters per second squared
      */
-    public double surfaceGravity1(double mass, double radius)
-    {
+    fun surfaceGravity1(mass: Double, radius: Double): Double {
         /* convert to metres */
-        final double radiusM = radius * 1000.0;
+        val radiusM = radius * 1000.0
 
-        return ((DoleConstants.G * mass) / (radiusM * radiusM));
+        return DoleConstants.G * mass / (radiusM * radiusM)
     }
 
     /**
@@ -142,9 +133,8 @@ public class DolePlanetStats
      * @param radius The planetary radius in KM
      * @return The surface gravity in meters per second squared
      */
-    public double surfaceGravity2(double density, double radius)
-    {
-        return ((4000000 * Math.PI * DoleConstants.G * radius * density) / 3.0);
+    fun surfaceGravity2(density: Double, radius: Double): Double {
+        return 4000000.0 * Math.PI * DoleConstants.G * radius * density / 3.0
     }
 
     /**
@@ -155,9 +145,8 @@ public class DolePlanetStats
      * @param radius The planetary radius in KM
      * @return The escape velocity in km per second
      */
-    public double escapeVelocity(double mass, double radius)
-    {
-        return (Math.sqrt((2 * DoleConstants.G * mass) / (radius * 1000)) / 1000.0);
+    fun escapeVelocity(mass: Double, radius: Double): Double {
+        return Math.sqrt(2.0 * DoleConstants.G * mass / (radius * 1000)) / 1000.0
     }
 
     /**
@@ -166,99 +155,88 @@ public class DolePlanetStats
      * @param star The star in this sytem
      * @param p The planet to be processed
      */
-    public void computePlanetStats(Primary star, Planet p)
-    {
-        double k2;
-        double dw;
+    fun computePlanetStats(star: Primary, p: Planet) {
+        val k2: Double
+        var dw: Double
 
-        p.setHighTemperature(cTemp(star.getLuminosity(), p.getA()));
-        p.setLowTemperature(cTemp(star.getLuminosity(), p.getA()));
+        p.highTemperature = cTemp(star.luminosity, p.a)
+        p.lowTemperature = cTemp(star.luminosity, p.a)
 
-        p.setMass(p.getDustMass() + p.getGasMass());
+        p.mass = p.dustMass + p.gasMass
 
         /* convert solar-relative masses to Earth-relative masses */
-        p.setMass(p.getMass() * 329390.0);
-        p.setDustMass(p.getDustMass() * 329390.0);
-        p.setGasMass(p.getGasMass() * 329390.0);
+        p.mass = p.mass * 329390.0
+        p.dustMass = p.dustMass * 329390.0
+        p.gasMass = p.gasMass * 329390.0
 
         /* if less than a tenth of the mass is gas, it ain't a gas giant! */
-        if ((p.getGasMass() / p.getMass()) < 0.1)
-        {
-            p.setGasGiant(false);
+        if (p.gasMass / p.mass < 0.1) {
+            p.isGasGiant = false
         }
 
         /* fiddle densities to likely values */
-        if (p.isGasGiant())
-        {
-            final double dm =
-                Math.pow(p.getDustMass(), 0.125) * Math.pow(
-                        star.getREcosphere() / p.getA(), 0.25) * 5.5;
+        if (p.isGasGiant) {
+            val dm = Math.pow(p.dustMass, 0.125) * Math.pow(
+                    star.rEcosphere / p.a, 0.25) * 5.5
 
-            final double dg =
-                (0.5 + (0.5 * this.utils.nextDouble())) * Math.sqrt(
-                        273 / p.getHighTemperature());
+            val dg = (0.5 + 0.5 * this.utils!!.nextDouble()) * Math.sqrt(
+                    273 / p.highTemperature)
 
-            final double vd = p.getDustMass() / dm;
-            final double vg = p.getGasMass() / dg;
+            val vd = p.dustMass / dm
+            val vg = p.gasMass / dg
 
-            p.setDensity(p.getMass() / (vd + vg));
+            p.density = p.mass / (vd + vg)
 
-            k2 = 0.24;
-        }
-        else
-        {
+            k2 = 0.24
+        } else {
             /* tonnes / m**3 */
-            p.setDensity(
-                Math.pow(p.getMass(), 0.125) * Math.pow(
-                        star.getREcosphere() / p.getA(), 0.25) * 5.5);
+            p.density = Math.pow(p.mass, 0.125) * Math.pow(
+                    star.rEcosphere / p.a, 0.25) * 5.5
 
-            k2 = 0.33;
+            k2 = 0.33
         }
 
-        p.setOrbitalPeriod(Math.sqrt(Math.pow(p.getA(), 3.0) / star.getMass()));
-        p.setRadius(
-            Math.pow((p.getMass() * 6.0E21) / (p.getDensity() * 4.2), 0.333) / 1000.0);
+        p.orbitalPeriod = Math.sqrt(Math.pow(p.a, 3.0) / star.mass)
+        p.radius = Math.pow(p.mass * 6.0E21 / (p.density * 4.2), 0.333) / 1000.0
 
         // radians / sec
-        p.setDay(
-            Math.sqrt(
-                (8.73E-2 * p.getMass()) / (0.5 * k2 * p.getRadius() * p.getRadius())));
+        p.day = Math.sqrt(
+                8.73E-2 * p.mass / (0.5 * k2 * p.radius * p.radius))
 
         /* Tidal braking forces from central star */
         dw = 1.0 * /* matter/mass distribution == density??? */
-                (p.getRadius() / 6422.0) * /* in km */
-                (1.0 / p.getMass()) * /* in Earth masses */
-                Math.pow(star.getMass(), 2.0) * Math.pow(1.0 / p.getA(), 6.0) * -1.3E-6;
+                (p.radius / 6422.0) * /* in km */
+                (1.0 / p.mass) * /* in Earth masses */
+                Math.pow(star.mass, 2.0) * Math.pow(1.0 / p.a, 6.0) * -1.3E-6
 
-        dw *= 4.0 /* star->age */; /* 10E9 years */
+        dw *= 4.0 /* star->age */ /* 10E9 years */
 
-        p.setDay(p.getDay() + dw);
+        p.day = p.day + dw
 
-        if (p.getDay() < 0.0)
-        {
+        if (p.day < 0.0) {
             // TODO: should set the resonant flag?
-            p.setDay(0.0);
-        }
-        else
-        {
-            p.setDay((2 * Math.PI) / (3600.0 * p.getDay())); // hours
+            p.day = 0.0
+        } else {
+            p.day = 2 * Math.PI / (3600.0 * p.day) // hours
         }
 
         /* check for spin resonance period */
-        if ((p.getE() > 0.1) && (p.getDay() == 0.0))
-        {
-            p.setDay(
-                (p.getOrbitalPeriod() * (1.0 - p.getE())) / (1.0 + p.getE()) * 24.0);
+        if (p.e > 0.1 && p.day == 0.0) {
+            p.day = p.orbitalPeriod * (1.0 - p.e) / (1.0 + p.e) * 24.0
         }
 
-        p.setSurfaceGravity(surfaceGravity2(p.getDensity(), p.getRadius()));
-        p.setEscapeVelocity(
-            escapeVelocity(
-                p.getMass() * DoleConstants.MASS_OF_EARTH, p.getRadius()));
+        p.surfaceGravity = surfaceGravity2(p.density, p.radius)
+        p.escapeVelocity = escapeVelocity(
+                p.mass * DoleConstants.MASS_OF_EARTH, p.radius)
 
         /* now put masses back into solar units */
-        p.setMass(p.getMass() / 329390.0);
-        p.setDustMass(p.getDustMass() / 329390.0);
-        p.setGasMass(p.getGasMass() / 329390.0);
+        p.mass = p.mass / 329390.0
+        p.dustMass = p.dustMass / 329390.0
+        p.gasMass = p.gasMass / 329390.0
+    }
+
+    companion object {
+        /** Our logging object  */
+        private val log = LogFactory.getLog(DolePlanetStats::class.java)
     }
 }

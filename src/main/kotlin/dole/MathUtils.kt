@@ -48,9 +48,9 @@
  *
  * Created on December 21, 2005, 2:43 PM
  */
-package dole;
+package dole
 
-import java.util.Random;
+import java.util.Random
 
 /**
  * General utility functions
@@ -58,20 +58,40 @@ import java.util.Random;
  * @author martin
  * @version $Id: MathUtils.java,v 1.8 2006-07-06 06:59:43 martin Exp $
  */
-public class MathUtils
-{
-    /** The seed value for this random number generator */
-    private long seed = 0;
+class MathUtils {
+    /** The seed value for this random number generator  */
+    /**
+     * Getter for property seed.
+     * @return Value of property seed.
+     */
+    /**
+     * Set the seed on the random number generator being used for these operations
+     *
+     * @param seed The seed value to use
+     */
+    var seed: Long = 0
+        set(seed) {
+            field = seed
+            this.random!!.setSeed(seed)
+        }
 
-    /** The random number generator in use by this object */
-    private Random random;
+    /** The random number generator in use by this object  */
+    /**
+     * Getter for property random.
+     * @return Value of property random.
+     */
+    /**
+     * Setter for property random
+     *
+     * @param random The new value of the random property
+     */
+    var random: Random? = null
 
     /**
      * Creates a new instance of MathUtils
      */
-    public MathUtils()
-    {
-        this.random = new Random();
+    constructor() {
+        this.random = Random()
     }
 
     /**
@@ -79,30 +99,8 @@ public class MathUtils
      *
      * @param random The random number generator to use
      */
-    public MathUtils(Random random)
-    {
-        this.random = random;
-    }
-
-    /**
-     * Setter for property random
-     *
-     * @param random The new value of the random property
-     */
-    public void setRandom(Random random)
-    {
-        this.random = random;
-    }
-
-    /**
-     * Set the seed on the random number generator being used for these operations
-     *
-     * @param seed The seed value to use
-     */
-    public void setSeed(long seed)
-    {
-        this.seed = seed;
-        this.random.setSeed(seed);
+    constructor(random: Random) {
+        this.random = random
     }
 
     /**
@@ -111,9 +109,8 @@ public class MathUtils
      *
      * @return the next random number as a double between 0 and 1
      */
-    public double nextDouble()
-    {
-        return this.random.nextDouble();
+    fun nextDouble(): Double {
+        return this.random!!.nextDouble()
     }
 
     /**
@@ -122,9 +119,8 @@ public class MathUtils
      *
      * @return the next random number as a float between 0 and 1
      */
-    public float nextFloat()
-    {
-        return this.random.nextFloat();
+    fun nextFloat(): Float {
+        return this.random!!.nextFloat()
     }
 
     /**
@@ -133,9 +129,8 @@ public class MathUtils
      *
      * @return the next random number as an integer
      */
-    public int nextInt()
-    {
-        return this.random.nextInt();
+    fun nextInt(): Int {
+        return this.random!!.nextInt()
     }
 
     /**
@@ -145,9 +140,8 @@ public class MathUtils
      * @param n The limit for the number to be generated
      * @return the next random number as an integer between 0 and n-1
      */
-    public int nextInt(int n)
-    {
-        return this.random.nextInt(n);
+    fun nextInt(n: Int): Int {
+        return this.random!!.nextInt(n)
     }
 
     /**
@@ -158,11 +152,10 @@ public class MathUtils
      * @param outer The upper bound for the random number
      * @return A random number in the range between the specified bounds (inclusive)
      */
-    public double randomNumber(double inner, double outer)
-    {
-        final double range = outer - inner;
+    fun randomNumber(inner: Double, outer: Double): Double {
+        val range = outer - inner
 
-        return (this.random.nextDouble() * range) + inner;
+        return this.random!!.nextDouble() * range + inner
     }
 
     /**
@@ -173,9 +166,8 @@ public class MathUtils
      * @param variation The allowed variation about the central value
      * @return A random number in the range value-variation to value+variation
      */
-    public double about(double value, double variation)
-    {
-        return value + (value * randomNumber(-variation, variation));
+    fun about(value: Double, variation: Double): Double {
+        return value + value * randomNumber(-variation, variation)
     }
 
     // MagicNumber OFF
@@ -185,94 +177,71 @@ public class MathUtils
      *
      * @return A randomly chosen eccentricity value
      */
-    public double randomEccentricity()
-    {
-        double e;
+    fun randomEccentricity(): Double {
+        var e: Double
 
-        e = 1.0 -
-            Math.pow(randomNumber(0.0, 1.0), Constants.ECCENTRICITY_COEFF);
+        e = 1.0 - Math.pow(randomNumber(0.0, 1.0), Constants.ECCENTRICITY_COEFF)
 
         // Note that this corresponds to a random number less than 10E-26
-        if (e > .99)
-        {
-            e = .99;
+        if (e > .99) {
+            e = .99
         }
 
-        return e;
+        return e
     }
 
-    // MagicNumber ON
+    companion object {
 
-    /**
-     * Convenience function to compute the second power of a value
-     *
-     * @param val The input value
-     * @return The second power of the input value
-     */
-    public static double pow2(double val)
-    {
-        return val * val;
-    }
+        // MagicNumber ON
 
-    /**
-     * Convenience function to compute the third power of a value
-     *
-     * @param val The input value
-     * @return The third power of the input value
-     */
-    public static double pow3(double val)
-    {
-        return val * val * val;
-    }
+        /**
+         * Convenience function to compute the second power of a value
+         *
+         * @param val The input value
+         * @return The second power of the input value
+         */
+        fun pow2(`val`: Double): Double {
+            return `val` * `val`
+        }
 
-    /**
-     * Convenience function to compute the fourth power of a value
-     *
-     * @param val The input value
-     * @return The fourth power of the input value
-     */
-    public static double pow4(double val)
-    {
-        return val * val * val * val;
-    }
+        /**
+         * Convenience function to compute the third power of a value
+         *
+         * @param val The input value
+         * @return The third power of the input value
+         */
+        fun pow3(`val`: Double): Double {
+            return `val` * `val` * `val`
+        }
 
-    /**
-     * Convenience function to compute the fourth root of a value
-     *
-     * @param val The input value
-     * @return The fourth root of the input value
-     */
-    public static double fourthRoot(double val)
-    {
-        return Math.sqrt(Math.sqrt(val));
-    }
+        /**
+         * Convenience function to compute the fourth power of a value
+         *
+         * @param val The input value
+         * @return The fourth power of the input value
+         */
+        fun pow4(`val`: Double): Double {
+            return `val` * `val` * `val` * `val`
+        }
 
-    /**
-     * Convenience function to compute the cube root of a value
-     *
-     * @param val The input value
-     * @return The cube root of the input value
-     */
-    public static double cubeRoot(double val)
-    {
-        return Math.pow(val, 1.0 / 3.0);
-    }
+        /**
+         * Convenience function to compute the fourth root of a value
+         *
+         * @param val The input value
+         * @return The fourth root of the input value
+         */
+        fun fourthRoot(`val`: Double): Double {
+            return Math.sqrt(Math.sqrt(`val`))
+        }
 
-    /**
-     * Getter for property random.
-     * @return Value of property random.
-     */
-    public Random getRandom()
-    {
-        return this.random;
-    }
-
-    /**
-     * Getter for property seed.
-     * @return Value of property seed.
-     */
-    public long getSeed()
-    {
-        return this.seed;
+        /**
+         * Convenience function to compute the cube root of a value
+         *
+         * @param val The input value
+         * @return The cube root of the input value
+         */
+        fun cubeRoot(`val`: Double): Double {
+            return Math.pow(`val`, 1.0 / 3.0)
+        }
     }
 }

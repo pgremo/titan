@@ -44,70 +44,66 @@
  */
 
 /*
- * Gas.java
+ * DolePlanetRecord.java
  *
- * Created on December 21, 2005, 10:23 AM
+ * Created on December 26, 2005, 6:24 PM
+ *
  */
-package dole;
+package dole
 
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 
 /**
- * Bean class describing a gas
+ * A bean class representing a planet for the Dole accretion code.
  *
  * @author martin
- * @version $Id: Gas.java,v 1.4 2006-07-06 06:58:33 martin Exp $
+ * @version $Id: DolePlanetRecord.java,v 1.3 2006-07-06 06:58:35 martin Exp $
  */
-public class Gas
-{
+/** Creates a new instance of DolePlanetRecord  */
+class DolePlanetRecord : BasicPlanet() {
 
     /**
-     * Holds value of property surfacePressure.
+     * Holds value of property rMin.
      */
-    private double surfacePressure;
-
-    /** Creates a new instance of Gas */
-    public Gas()
-    {
-    }
+    /**
+     * Getter for property rMin.
+     * @return Value of property rMin.
+     */
+    /**
+     * Setter for property rMin.
+     * @param rMin New value of property rMin.
+     */
+    var rMin: Double = 0.toDouble()
 
     /**
-     * Getter for property pressure.
-     * @return Value of property pressure.
+     * Holds value of property rMax.
      */
-    public double getSurfacePressure()
-    {
-        return this.surfacePressure;
-    }
+    /**
+     * Getter for property rMax.
+     * @return Value of property rMax.
+     */
+    /**
+     * Setter for property rMax.
+     * @param rMax New value of property rMax.
+     */
+    var rMax: Double = 0.toDouble()
 
     /**
-     * Setter for property surfacePressure.
-     * @param surfacePressure New value of property surfacePressure.
+     * Holds value of property reach.
      */
-    public void setSurfacePressure(double surfacePressure)
-    {
-        this.surfacePressure = surfacePressure;
-    }
-
     /**
-     * Holds value of property element.
+     * Getter for property reach.
+     * @return Value of property reach.
      */
-    private ChemTable element;
-
     /**
-     * Getter for property element.
-     * @return Value of property element.
+     * Setter for property reach.
+     * @param reach New value of property reach.
      */
-    public ChemTable getElement()
-    {
-        return this.element;
-    }
+    var reach: Double = 0.toDouble()
 
-    /**
-     * Setter for property element.
-     * @param element New value of property element.
-     */
-    public void setElement(ChemTable element)
-    {
-        this.element = element;
+    companion object {
+        /** Our logging object  */
+        private val log = LogFactory.getLog(DolePlanetRecord::class.java)
     }
 }

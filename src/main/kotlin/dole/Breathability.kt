@@ -44,98 +44,28 @@
  */
 
 /*
- * DolePlanetRecord.java
+ * Breathability.java
  *
- * Created on December 26, 2005, 6:24 PM
- *
+ * Created on 21 December 2005, 20:41
  */
-package dole;
+package dole
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
- * A bean class representing a planet for the Dole accretion code.
+ * Enum for breathability types
  *
- * @author martin
- * @version $Id: DolePlanetRecord.java,v 1.3 2006-07-06 06:58:35 martin Exp $
+ * @author Martin
+ * @version $Id: Breathability.java,v 1.3 2006-07-06 06:58:33 martin Exp $
  */
-public class DolePlanetRecord extends BasicPlanet
-{
-    /** Our logging object */
-    private static Log log = LogFactory.getLog(DolePlanetRecord.class);
-
-    /**
-     * Holds value of property rMin.
-     */
-    private double rMin;
-
-    /**
-     * Holds value of property rMax.
-     */
-    private double rMax;
-
-    /**
-     * Holds value of property reach.
-     */
-    private double reach;
-
-    /** Creates a new instance of DolePlanetRecord */
-    public DolePlanetRecord()
-    {
-    }
-
-    /**
-     * Getter for property rMin.
-     * @return Value of property rMin.
-     */
-    public double getRMin()
-    {
-        return this.rMin;
-    }
-
-    /**
-     * Setter for property rMin.
-     * @param rMin New value of property rMin.
-     */
-    public void setRMin(double rMin)
-    {
-        this.rMin = rMin;
-    }
-
-    /**
-     * Getter for property rMax.
-     * @return Value of property rMax.
-     */
-    public double getRMax()
-    {
-        return this.rMax;
-    }
-
-    /**
-     * Setter for property rMax.
-     * @param rMax New value of property rMax.
-     */
-    public void setRMax(double rMax)
-    {
-        this.rMax = rMax;
-    }
-
-    /**
-     * Getter for property reach.
-     * @return Value of property reach.
-     */
-    public double getReach()
-    {
-        return this.reach;
-    }
-
-    /**
-     * Setter for property reach.
-     * @param reach New value of property reach.
-     */
-    public void setReach(double reach)
-    {
-        this.reach = reach;
-    }
+enum class Breathability {
+    /** Indicates that there is no atmosphere  */
+    NONE,
+    /** Indicates that there is a breathable atmosphere  */
+    BREATHABLE,
+    /** Indicates there is an atmosphere but it is unbreathable (e.g. pressure
+     * is too low)  */
+    UNBREATHABLE,
+    /** Indicates that there is an atmosphere but it consists of poisonous
+     * gases  */
+    POISONOUS
 }
