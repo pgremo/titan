@@ -30,15 +30,14 @@ object DoleAccreteSpek : Spek({
             it("that are consistent") {
                 println(actual.joinToString(separator = ",\n"))
                 val expected = ArrayList(listOf(
-                        DolePlanetRecord().apply { a = 0.3113751815174137; e = 0.03999828648267956; mass = 1.643651194286459E-7; isGasGiant = false },
-                        DolePlanetRecord().apply { a = 0.42386250483222354; e = 0.018198213550807085; mass = 4.763165900327659E-7; isGasGiant = false },
-                        DolePlanetRecord().apply { a = 0.5952289632842835; e = 0.024804932956769665; mass = 1.5480174565079395E-6; isGasGiant = false },
-                        DolePlanetRecord().apply { a = 1.2010286878417895; e = 0.0014835686180887375; mass = 1.2066269240540442E-5; isGasGiant = true },
-                        DolePlanetRecord().apply { a = 1.8344924182083255; e = 0.02856363405524398; mass = 1.0789875794951952E-5; isGasGiant = true },
-                        DolePlanetRecord().apply { a = 3.7083934832989147; e = 0.005686561589768269; mass = 1.6930478692795537E-4; isGasGiant = true },
-                        DolePlanetRecord().apply { a = 8.281859692657306; e = 0.009900058459724637; mass = 1.711609257961245E-4; isGasGiant = true },
-                        DolePlanetRecord().apply { a = 18.395001217667495; e = 4.8144185563087083E-4; mass = 7.159565830198185E-5; isGasGiant = true },
-                        DolePlanetRecord().apply { a = 43.11940427104446; e = 0.0075607994621553765; mass = 1.8009632755850223E-7; isGasGiant = false }
+                        DolePlanetRecord().apply{a=0.6303917344730557; e=0.005443979916138153; mass=4.104823500422755E-6; isGasGiant=false},
+                        DolePlanetRecord().apply{a=0.9712121767623835; e=0.010796471805141372; mass=2.5706982445480604E-7; isGasGiant=false},
+                        DolePlanetRecord().apply{a=1.3555402192461667; e=0.0020204429021313808; mass=1.8621572094689222E-5; isGasGiant=true},
+                        DolePlanetRecord().apply{a=2.172843596908609; e=0.010569426321991704; mass=1.0789237351021604E-6; isGasGiant=false},
+                        DolePlanetRecord().apply{a=4.522056786834336; e=3.9815875679888313E-4; mass=4.419461824501252E-4; isGasGiant=true},
+                        DolePlanetRecord().apply{a=14.353802146015811; e=0.011948880976919651; mass=9.340614221827492E-5; isGasGiant=true},
+                        DolePlanetRecord().apply{a=28.54042758070824; e=0.001173028001086207; mass=3.12928920549438E-7; isGasGiant=false},
+                        DolePlanetRecord().apply{a=41.603671449658954; e=0.0028714884396017215; mass=1.506198521496348E-6; isGasGiant=true}
                 ))
                 actual `should equal` expected
             }

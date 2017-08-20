@@ -109,12 +109,12 @@ internal constructor(
     /**
      * Linked list of dust records
      */
-    private var list0: LinkedList<DustRecord>? = LinkedList()
+    private lateinit var list0: LinkedList<DustRecord>
 
     /**
      * Linked list of dust records
      */
-    private var list2: LinkedList<DustRecord>? = LinkedList()
+    private lateinit var list2: LinkedList<DustRecord>
 
     /**
      * Critical mass for gas accretion
@@ -173,19 +173,8 @@ internal constructor(
         list0 = LinkedList()
         list2 = LinkedList()
 
-        this.list0!!.add(DustRecord(minRadius, maxRadius))
-        this.list2!!.add(DustRecord(minRadius, maxRadius))
-    }
-
-    /**
-     * Release any dust information held in the lists
-     */
-    private fun freeBands() {
-        this.list0!!.clear()
-        this.list0 = null
-
-        this.list2!!.clear()
-        this.list2 = null
+        this.list0.add(DustRecord(minRadius, maxRadius))
+        this.list2.add(DustRecord(minRadius, maxRadius))
     }
 
     /**
@@ -218,7 +207,7 @@ internal constructor(
             newp.e = newp.e * 1.5
             newp.a = minRadius + (maxRadius - minRadius) * newp.a
         } else {
-            val b = list0!!.peek()
+            val b = list0.peek()
 
             newp.radius = b.innerEdge + (b.outerEdge - b.innerEdge) * newp.a
             newp.e = newp.e * 2.0
@@ -246,8 +235,7 @@ internal constructor(
      * @param p        The planet record for the planet being constructed
      * @return The amount of mass swept from the dust or gas
      */
-    private fun sweptMass(
-            list: LinkedList<DustRecord>?, listtype: Int, p: DolePlanetRecord): Double {
+    private fun sweptMass(list: LinkedList<DustRecord>, listtype: Int, p: DolePlanetRecord): Double {
         var r: Double
         var mass = 0.0
         var min: Double
@@ -283,18 +271,18 @@ internal constructor(
         /* Traverse the list, looking at each existing band to see what we
          * would sweep up.
          */
-        for (b in list!!) {
+        for ((innerEdge, outerEdge) in list) {
             /* check for trivial rejection */
-            if (max < b.innerEdge || min > b.outerEdge) {
+            if (max < innerEdge || min > outerEdge) {
                 continue
             }
 
-            if (max > b.outerEdge) {
-                max = b.outerEdge
+            if (max > outerEdge) {
+                max = outerEdge
             }
 
-            if (min < b.innerEdge) {
-                min = b.innerEdge
+            if (min < innerEdge) {
+                min = innerEdge
             }
 
             r = (min + max) / 2.0
@@ -335,55 +323,35 @@ internal constructor(
      * @param list The dust list to be updated
      * @param p    The planet being constructed
      */
-    private fun updateBands(list: LinkedList<DustRecord>?, p: DolePlanetRecord) {
-        val min = p.rMin /* minimum and maximum reach of the planet */
+    private fun updateBands(list: LinkedList<DustRecord>, p: DolePlanetRecord): LinkedList<DustRecord> {
+        val result = LinkedList<DustRecord>()
+
+        val min = p.rMin
         val max = p.rMax
 
-        val i = list!!.iterator()
-
-        var pendingPrepend: MutableList<DustRecord>? = null
-
-        while (i.hasNext()) {
-            val b = i.next()
-
-            /* check for trivial rejection */
-            if (max < b.innerEdge || min > b.outerEdge) {
-                continue
-            }
-
-            if (max < b.outerEdge) {
+        for (b in list) {
+            val added = mutableListOf<DustRecord>()
+            // check for trivial rejection
+            if (max <= b.innerEdge || min >= b.outerEdge) {
+                added += b
+            } else if (max < b.outerEdge) {
                 if (min > b.innerEdge) {
-                    /* interval within band, so split it */
-                    val newband = DustRecord(b.innerEdge, min)
-                    b.innerEdge = max
-
-                    if (pendingPrepend == null) {
-                        pendingPrepend = ArrayList()
-                    }
-
-                    pendingPrepend.add(newband)
-                } else {
-                    /* interval overlaps inner edge */
-                    b.innerEdge = max
+                    // interval within band, so split it
+                    added += b.copy(outerEdge = min)
                 }
+                b.innerEdge = max
+                added += b
+            } else if (min > b.innerEdge) {
+                // interval overlaps outer edge
+                b.outerEdge = min
+                added += b
             } else {
-                if (min > b.innerEdge) {
-                    /* interval overlaps outer edge */
-                    b.outerEdge = min
-                } else {
-                    /* interval contains band, so kill it */
-                    i.remove()
-                }
+                // delete band
             }
+            result += added
         }
 
-        // now add the elements we couldn't because we'd have mucked up the iterator
-        // java list/iterator semantics can be v. annoying sometimes
-        if (pendingPrepend != null) {
-            for (newband in pendingPrepend) {
-                list.addFirst(newband)
-            }
-        }
+        return result
     }
 
     /**
@@ -463,14 +431,14 @@ internal constructor(
         /* You'll notice we didn't modify the band structure at all while
          * accreting matter, we do that now.
          */
-        updateBands(this.list0, p)
+        list0 = updateBands(this.list0, p)
 
         if (p.isGasGiant) {
             /* do something with the gas density */
             /* In this case, it's cheaper to just recompute the accreted gas
              * in each iteration as we only use the one gas band.
              */
-            updateBands(this.list2, p)
+            list2 = updateBands(this.list2, p)
         }
     }
 
@@ -485,8 +453,7 @@ internal constructor(
      * @param p2 The second planet in the collision
      * @return A planet record for the resulting merged body
      */
-    private fun mergePlanets(
-            p1: DolePlanetRecord, p2: DolePlanetRecord): Planet {
+    private fun mergePlanets(p1: DolePlanetRecord, p2: DolePlanetRecord): Planet {
         val perihelion: Double = p2.a * (1 - p2.e)
         val aphelion: Double = p2.a * (1 + p2.e)
 
@@ -601,15 +568,13 @@ internal constructor(
         initBands()
 
         /* . . . and we're off to play God. */
-        while (!list0!!.isEmpty()) {
+        while (!list0.isEmpty()) {
             val p = createPlanet(star)
 
             evolvePlanet(star, p)
 
             checkCoalesence(star, p)
         }
-
-        freeBands()
 
         val li = star.planets.listIterator()
 

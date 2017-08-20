@@ -612,7 +612,7 @@ internal constructor() : Planet {
     override var firstMoon: Planet? = null
 
     override fun toString(): String {
-        return "${javaClass.simpleName}.apply{a=$a; e=$e; mass=$mass; gasGiant=$isGasGiant}"
+        return "${javaClass.simpleName}().apply{a=$a; e=$e; mass=$mass; isGasGiant=$isGasGiant}"
     }
 
     override fun equals(other: Any?): Boolean {
