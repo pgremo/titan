@@ -52,9 +52,6 @@
 package dole
 
 import org.apache.commons.logging.LogFactory
-
-import java.util.*
-
 import java.util.Comparator.comparing
 
 /**
@@ -109,12 +106,12 @@ internal constructor(
     /**
      * Linked list of dust records
      */
-    private lateinit var list0: LinkedList<DustRecord>
+    private lateinit var list0: List<DustRecord>
 
     /**
      * Linked list of dust records
      */
-    private lateinit var list2: LinkedList<DustRecord>
+    private lateinit var list2: List<DustRecord>
 
     /**
      * Critical mass for gas accretion
@@ -170,11 +167,8 @@ internal constructor(
      * Initialize the dust band information
      */
     private fun initBands() {
-        list0 = LinkedList()
-        list2 = LinkedList()
-
-        this.list0.add(DustRecord(minRadius, maxRadius))
-        this.list2.add(DustRecord(minRadius, maxRadius))
+        list0 = mutableListOf(DustRecord(minRadius, maxRadius))
+        list2 = mutableListOf(DustRecord(minRadius, maxRadius))
     }
 
     /**
@@ -207,7 +201,7 @@ internal constructor(
             newp.e = newp.e * 1.5
             newp.a = minRadius + (maxRadius - minRadius) * newp.a
         } else {
-            val b = list0.peek()
+            val b = list0.first()
 
             newp.radius = b.innerEdge + (b.outerEdge - b.innerEdge) * newp.a
             newp.e = newp.e * 2.0
@@ -235,7 +229,7 @@ internal constructor(
      * @param p        The planet record for the planet being constructed
      * @return The amount of mass swept from the dust or gas
      */
-    private fun sweptMass(list: LinkedList<DustRecord>, listtype: Int, p: DolePlanetRecord): Double {
+    private fun sweptMass(list: List<DustRecord>, listtype: Int, p: DolePlanetRecord): Double {
         var r: Double
         var mass = 0.0
         var min: Double
@@ -323,35 +317,30 @@ internal constructor(
      * @param list The dust list to be updated
      * @param p    The planet being constructed
      */
-    private fun updateBands(list: LinkedList<DustRecord>, p: DolePlanetRecord): LinkedList<DustRecord> {
-        val result = LinkedList<DustRecord>()
-
+    private fun updateBands(list: List<DustRecord>, p: DolePlanetRecord): List<DustRecord> {
         val min = p.rMin
         val max = p.rMax
 
-        for (b in list) {
-            val added = mutableListOf<DustRecord>()
+        return list.flatMap {
             // check for trivial rejection
-            if (max <= b.innerEdge || min >= b.outerEdge) {
-                added += b
-            } else if (max < b.outerEdge) {
-                if (min > b.innerEdge) {
+            if (max <= it.innerEdge || min >= it.outerEdge) {
+                listOf(it)
+            } else if (max < it.outerEdge) {
+                val added = mutableListOf<DustRecord>()
+                if (min > it.innerEdge) {
                     // interval within band, so split it
-                    added += b.copy(outerEdge = min)
+                    added += it.copy(outerEdge = min)
                 }
-                b.innerEdge = max
-                added += b
-            } else if (min > b.innerEdge) {
+                it.innerEdge = max
+                added + it
+            } else if (min > it.innerEdge) {
                 // interval overlaps outer edge
-                b.outerEdge = min
-                added += b
+                it.outerEdge = min
+                listOf(it)
             } else {
-                // delete band
+                emptyList()
             }
-            result += added
         }
-
-        return result
     }
 
     /**
