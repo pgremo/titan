@@ -62,26 +62,12 @@ import java.util.*
  * @author martin
  * @version $Id: DolePlanetStats.java,v 1.3 2006-07-06 06:58:35 martin Exp $
  */
-class DolePlanetStats {
+class DolePlanetStats(utils: Random) {
 
     /** The math utility object in use  */
-    private var utils: Random? = null
+    private var utils: Random? = utils
 
     // MagicNumber OFF
-
-    /** Creates a new instance of DolePlanetStats  */
-    constructor() {
-        this.utils = Random()
-    }
-
-    /**
-     * Creates a new instance of DolePlanetStats
-     *
-     * @param utils The math utility object to use for random numbers
-     */
-    constructor(utils: Random) {
-        this.utils = utils
-    }
 
     /**
      * Compute the stellar flux at the top of the planet's atmosphere.  This
@@ -93,7 +79,7 @@ class DolePlanetStats {
      * @param radius The distance from the star in AU
      * @return The stellar flux in watts per square metre
      */
-    fun cFlux(sunLum: Double, radius: Double): Double {
+    private fun cFlux(sunLum: Double, radius: Double): Double {
         return 1400.0 * sunLum / (radius * radius)
     }
 
@@ -107,7 +93,7 @@ class DolePlanetStats {
      * @param radius The distance from the star in AU
      * @return The planetary black body temperature
      */
-    fun cTemp(sunLum: Double, radius: Double): Double {
+    private fun cTemp(sunLum: Double, radius: Double): Double {
         return Math.pow(cFlux(sunLum, radius) / (4.0 * DoleConstants.R), 0.25)
     }
 
@@ -134,7 +120,7 @@ class DolePlanetStats {
      * @param radius The planetary radius in KM
      * @return The surface gravity in meters per second squared
      */
-    fun surfaceGravity2(density: Double, radius: Double): Double {
+    private fun surfaceGravity2(density: Double, radius: Double): Double {
         return 4000000.0 * Math.PI * DoleConstants.G * radius * density / 3.0
     }
 
@@ -146,7 +132,7 @@ class DolePlanetStats {
      * @param radius The planetary radius in KM
      * @return The escape velocity in km per second
      */
-    fun escapeVelocity(mass: Double, radius: Double): Double {
+    private fun escapeVelocity(mass: Double, radius: Double): Double {
         return Math.sqrt(2.0 * DoleConstants.G * mass / (radius * 1000)) / 1000.0
     }
 
@@ -158,7 +144,10 @@ class DolePlanetStats {
      */
     fun computePlanetStats(star: Primary, p: Planet) {
         val k2: Double
-        var dw: Double
+        var dw: Double = 1.0 * /* matter/mass distribution == density??? */
+                (p.radius / 6422.0) * /* in km */
+                (1.0 / p.mass) * /* in Earth masses */
+                Math.pow(star.mass, 2.0) * Math.pow(1.0 / p.a, 6.0) * -1.3E-6
 
         p.highTemperature = cTemp(star.luminosity, p.a)
         p.lowTemperature = cTemp(star.luminosity, p.a)
@@ -205,10 +194,6 @@ class DolePlanetStats {
                 8.73E-2 * p.mass / (0.5 * k2 * p.radius * p.radius))
 
         /* Tidal braking forces from central star */
-        dw = 1.0 * /* matter/mass distribution == density??? */
-                (p.radius / 6422.0) * /* in km */
-                (1.0 / p.mass) * /* in Earth masses */
-                Math.pow(star.mass, 2.0) * Math.pow(1.0 / p.a, 6.0) * -1.3E-6
 
         dw *= 4.0 /* star->age */ /* 10E9 years */
 

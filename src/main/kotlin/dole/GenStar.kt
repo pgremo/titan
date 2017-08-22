@@ -71,7 +71,7 @@ class GenStar {
      * Getter for property utils.
      * @return Value of property utils.
      */
-    var utils: Random? = null
+    private var utils: Random? = null
         private set
 
     // MagicNumber OFF
@@ -182,13 +182,12 @@ class GenStar {
     /**
      * Compute the table of probabilities by class
      */
-    protected fun computeProbabilitiesByClass() {
+    private fun computeProbabilitiesByClass() {
         var i: Int
-        var j: Int
+        var j: Int = 0
         var t: Double
         var total: Double
 
-        j = 0
         while (j < N_SPC_CLASS) {
             total = 0.0
 
@@ -215,15 +214,12 @@ class GenStar {
      * by adding up all the values, then dividing each entry in the array
      * by the total.
      */
-    protected fun computeProbabilities() {
-        var i: Int
+    private fun computeProbabilities() {
+        var i = 0
         var j: Int
-        var t: Double
-        var total: Double
+        var t = 0.0
+        var total = 0.0
 
-        total = 0.0
-
-        i = 0
         while (i < N_MAG_CLASS) {
             j = 0
             while (j < N_SPC_CLASS) {
@@ -232,8 +228,6 @@ class GenStar {
             }
             ++i
         }
-
-        t = 0.0
 
         i = 0
         while (i < N_MAG_CLASS) {
@@ -255,10 +249,10 @@ class GenStar {
      * @param specClass The spectral class of the desired star
      * @return A randomly generated star of the specified class
      */
-    fun generateStar(magClass: Int, specClass: Int): Primary {
+    private fun generateStar(magClass: Int, specClass: Int): Primary {
         val sun = BasicPrimary()
 
-        var loopI: Int
+        var loopI = 0
         var t: Double
 
         var mClass = magClass
@@ -278,7 +272,6 @@ class GenStar {
 
         mClass = -1
 
-        loopI = 0
         while (loopI < N_LUM_CLASS && mClass < 0) {
             if (lClassMag[loopI][specClass] >= sun.absoluteMagnitude) {
                 mClass = loopI
@@ -338,10 +331,9 @@ class GenStar {
 
         val rnd = this.utils!!.nextDouble()
 
-        var loopI: Int
+        var loopI: Int = 0
         var loopJ: Int
 
-        loopI = 0
         while (loopI < N_MAG_CLASS && i < 0) {
             loopJ = 0
             while (loopJ < N_SPC_CLASS && i < 0) {
@@ -383,14 +375,13 @@ class GenStar {
      * @param specClass The spectral class of the desired star
      * @return A randomly generated star of the specified class
      */
-    fun generateStar(specClass: Int): Primary {
+    private fun generateStar(specClass: Int): Primary {
         var i = -1
 
         val rnd = this.utils!!.nextDouble()
 
-        var loopI: Int
+        var loopI: Int = 0
 
-        loopI = 0
         while (loopI < N_MAG_CLASS && i < 0) {
             if (this.starCountsClass[loopI][specClass] >= rnd) {
                 i = loopI

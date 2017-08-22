@@ -58,13 +58,8 @@ import org.apache.commons.logging.LogFactory
  * @author  martin
  * @version $Id: EnviroUtils.java,v 1.8 2006-07-06 06:58:33 martin Exp $
  */
-class EnviroUtils
-/** Creates a new instance of EnviroUtils  */
-protected constructor() {
+class EnviroUtils {
 
-    init {
-        throw UnsupportedOperationException()
-    }
 
     companion object {
         /** Our logger object  */
@@ -98,14 +93,10 @@ protected constructor() {
          * @param orbRadius The orbital radius of the planet (in AU)
          * @return The orbital zone of the planet
          */
-        fun getOrbitalZone(luminosity: Double, orbRadius: Double): Int {
-            return if (orbRadius < 4.0 * Math.sqrt(luminosity)) {
-                1
-            } else if (orbRadius < 15.0 * Math.sqrt(luminosity)) {
-                2
-            } else {
-                3
-            }
+        fun getOrbitalZone(luminosity: Double, orbRadius: Double) = when {
+            orbRadius < 4.0 * Math.sqrt(luminosity) -> 1
+            orbRadius < 15.0 * Math.sqrt(luminosity) -> 2
+            else -> 3
         }
 
         /**
@@ -178,10 +169,10 @@ protected constructor() {
 
             temp2 = Constants.A2_20 * Math.pow(atomicWeight, 4.0 / 3.0) * Math.pow(
                     Constants.SOLAR_MASS_IN_GRAMS, 2.0 / 3.0)
-            temp2 = temp2 * Math.pow(mass, 2.0 / 3.0)
-            temp2 = temp2 / (Constants.A1_20 * Math.pow(atomicNum, 2.0))
-            temp2 = 1.0 + temp2
-            temp = temp / temp2
+            temp2 *= Math.pow(mass, 2.0 / 3.0)
+            temp2 /= (Constants.A1_20 * Math.pow(atomicNum, 2.0))
+            temp2 += 1.0
+            temp /= temp2
             temp = temp * Math.pow(mass, 1.0 / 3.0) / Constants.CM_PER_KM
 
             /* Make Earth = actual earth */
@@ -200,18 +191,12 @@ protected constructor() {
          * @param gasGiant <pre>true</pre> if this is a gas giant
          * @return The density in grams/cc
          */
-        fun getEmpiricalDensity(
-                mass: Double, orbRadius: Double, rEcosphere: Double, gasGiant: Boolean): Double {
-            var temp: Double
+        fun getEmpiricalDensity(mass: Double, orbRadius: Double, rEcosphere: Double, gasGiant: Boolean): Double {
+            var temp: Double = Math.pow(mass * Constants.SUN_MASS_IN_EARTH_MASSES, 1.0 / 8.0)
 
-            temp = Math.pow(mass * Constants.SUN_MASS_IN_EARTH_MASSES, 1.0 / 8.0)
-            temp = temp * Math.pow(rEcosphere / orbRadius, 1.0 / 4.0)
+            temp *= Math.pow(rEcosphere / orbRadius, 1.0 / 4.0)
 
-            return if (gasGiant) {
-                temp * 1.2
-            } else {
-                temp * 5.5
-            }
+            return temp * if (gasGiant) 1.2 else 5.5
         }
 
         /**
