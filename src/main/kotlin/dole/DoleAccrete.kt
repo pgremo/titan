@@ -97,14 +97,9 @@ internal constructor(private val random: Random) {
     private lateinit var gas: List<DustRecord>
 
     /**
-     * Critical mass for gas accretion
-     */
-    private var criticalMass: Double = 0.toDouble() /* for accreting gas */
-
-    /**
      * The object used to get details about the generated plants
      */
-    private val planetStats: DolePlanetStats = DolePlanetStats(this.random)
+    private val planetStats: DolePlanetStats = DolePlanetStats(random)
 
     /**
      * Get the density for a particular radius
@@ -112,7 +107,7 @@ internal constructor(private val random: Random) {
      * @param r The orbital radius to get the density for
      * @return The calculated density
      */
-    private fun getDensity(r: Double) = A * Math.exp(-DoleConstants.ALPHA * Math.pow(r, DoleConstants.GAMMA))
+    private fun dustDensity(r: Double) = A * Math.exp(-DoleConstants.ALPHA * Math.pow(r, DoleConstants.GAMMA))
 
     /**
      * Get the gravitational reach for a particular mass at a given orbital radius
@@ -121,7 +116,7 @@ internal constructor(private val random: Random) {
      * @param mass   The mass of interest
      * @return The calculated reach
      */
-    private fun getReach(radius: Double, mass: Double) = radius * Math.pow(mass / (1.0 + mass), 0.25)
+    private fun getReach(radius: Double, mass: Double) = radius * Math.pow(mass / (1.0 + mass), 1.0 / 4.0)
 
     /**
      * Create a new planet around the star
@@ -148,22 +143,15 @@ internal constructor(private val random: Random) {
      * sweep from the available material in one iteration.
      *
      * @param list     A list of dust records
-     * @param type Which list this corresponds to (dust, gas)
      * @param p        The planet record for the planet being constructed
      * @return The amount of mass swept from the dust or gas
      */
-    private fun sweptMass(list: List<DustRecord>, type: Int, p: DolePlanetRecord): Double {
+    private fun sweptMass(list: List<DustRecord>, p: DolePlanetRecord, density: (Double) -> Double, rangeF: (DolePlanetRecord) -> ClosedRange<Double>): Double {
         var mass = 0.0
-        val tGas: Double by lazy { DoleConstants.K / ((DoleConstants.K - 1) * Math.pow(criticalMass / p.mass, DoleConstants.BETA) + 1) }
 
-        var min = p.rMin
-        var max = p.rMax
-
-        /* Account for eccentricity of dust particles */
-        if (type == 0) {
-            min /= (1 + DoleConstants.W)
-            max /= (1 - DoleConstants.W)
-        }
+        val range = rangeF(p)
+        var min = range.start
+        var max = range.endInclusive
 
         /* Used in gas accretion, it's constant so we can move it out here.  */
 
@@ -199,11 +187,6 @@ internal constructor(private val random: Random) {
              * function over the range (min, max) of orbital distance, but
              * we'll use the average distance instead.
              */
-            var density = getDensity(r)
-
-            if (type == 2) {
-                density *= tGas
-            }
 
             /* The swept mass is supposed to be computed using the gravitational
              * reach and density at the minimum and maximum distances at which
@@ -217,7 +200,7 @@ internal constructor(private val random: Random) {
              * We can speed things up a bit by moving the constant values
              * outside the loop.
              */
-            mass += r * (max - min) * density
+            mass += r * (max - min) * density(r)
         }
 
         return 2.0 * Math.PI * 2.0 * p.reach * mass
@@ -266,8 +249,7 @@ internal constructor(private val random: Random) {
         /* Our planetoid will accrete all matter within it's orbit . . . */
         var perihelion = p.a * (1 - p.e)
         var aphelion = p.a * (1 + p.e)
-
-        this.criticalMass = DoleConstants.B * Math.pow(Math.sqrt(star.luminosity) / perihelion, 0.75)
+        val criticalMass = DoleConstants.B * Math.pow(Math.sqrt(star.luminosity) / perihelion, 0.75)
 
         // this construct always brings a sense of dread
         while (true) {
@@ -289,17 +271,17 @@ internal constructor(private val random: Random) {
             val previousMass = p.mass
 
             /* accrete dust */
-            var swept = sweptMass(this.dust, 0, p)
+            var swept = sweptMass(dust, p, this::dustDensity, { it.rMin / (1 + DoleConstants.W)..it.rMax / (1 - DoleConstants.W) })
 
             p.dustMass = Math.max(p.dustMass, swept)
-            p.gasMass = Math.max(p.gasMass, swept * this.random.nextDouble(p.mass))
+            p.gasMass = Math.max(p.gasMass, swept * random.nextDouble(p.mass))
 
             /* accrete gas */
             if (p.dustMass > criticalMass) {
                 // it's a gas giant
                 p.isGasGiant = true
 
-                swept = sweptMass(this.gas, 2, p)
+                swept = sweptMass(gas, p, { dustDensity(it) * DoleConstants.K / ((DoleConstants.K - 1) * Math.pow(criticalMass / p.mass, DoleConstants.BETA) + 1) }, { it.rMin..it.rMax })
                 p.gasMass = Math.max(p.gasMass, swept)
             }
 
@@ -313,14 +295,14 @@ internal constructor(private val random: Random) {
         /* You'll notice we didn't modify the band structure at all while
          * accreting matter, we do that now.
          */
-        dust = updateBands(this.dust, p)
+        dust = updateBands(dust, p)
 
         if (p.isGasGiant) {
             /* do something with the gas density */
             /* In this case, it's cheaper to just recompute the accreted gas
              * in each iteration as we only use the one gas band.
              */
-            gas = updateBands(this.gas, p)
+            gas = updateBands(gas, p)
         }
     }
 
