@@ -1,6 +1,7 @@
 package dole
 
 import java.util.*
+import java.util.concurrent.ThreadLocalRandom
 
 
 fun <E, R> NavigableSet<E>.foldRight(initial: R, operation: (E, acc: R) -> R): R {
@@ -24,3 +25,5 @@ fun <E, R> Collection<E>.fold(initial: R, operation: (E, acc: R) -> R): R {
     }
     return accumulator
 }
+
+fun <E> List<E>.random(random: Random = ThreadLocalRandom.current()): E? = if (isEmpty()) null else this[random.nextInt(size)]

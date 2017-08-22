@@ -52,8 +52,7 @@ package dole
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-
-import java.util.HashMap
+import java.util.*
 
 /**
  * Random star generation with realistic, mass, luminosity and spectral class.
@@ -72,7 +71,7 @@ class GenStar {
      * Getter for property utils.
      * @return Value of property utils.
      */
-    var utils: MathUtils? = null
+    var utils: Random? = null
         private set
 
     // MagicNumber OFF
@@ -154,7 +153,7 @@ class GenStar {
      * Creates a new instance of GenStar
      */
     constructor() {
-        this.utils = MathUtils()
+        this.utils = Random()
 
         computeProbabilitiesByClass()
         computeProbabilities()
@@ -173,7 +172,7 @@ class GenStar {
      *
      * @param utils The object to use to obtain random numbers
      */
-    constructor(utils: MathUtils) {
+    constructor(utils: Random) {
         this.utils = utils
 
         computeProbabilitiesByClass()
@@ -246,15 +245,6 @@ class GenStar {
             }
             ++i
         }
-    }
-
-    /**
-     * Set the seed of the random number object
-     *
-     * @param seed The new seed value to be used
-     */
-    protected fun setSeed(seed: Long) {
-        this.utils!!.seed = seed
     }
 
     /**

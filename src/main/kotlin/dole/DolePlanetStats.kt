@@ -52,6 +52,7 @@
 package dole
 
 import org.apache.commons.logging.LogFactory
+import java.util.*
 
 /**
  * Planetstat : Compute the physical properties of a planet.
@@ -64,13 +65,13 @@ import org.apache.commons.logging.LogFactory
 class DolePlanetStats {
 
     /** The math utility object in use  */
-    private var utils: MathUtils? = null
+    private var utils: Random? = null
 
     // MagicNumber OFF
 
     /** Creates a new instance of DolePlanetStats  */
     constructor() {
-        this.utils = MathUtils()
+        this.utils = Random()
     }
 
     /**
@@ -78,7 +79,7 @@ class DolePlanetStats {
      *
      * @param utils The math utility object to use for random numbers
      */
-    constructor(utils: MathUtils) {
+    constructor(utils: Random) {
         this.utils = utils
     }
 
