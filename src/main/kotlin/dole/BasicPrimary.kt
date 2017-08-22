@@ -243,7 +243,7 @@ class BasicPrimary : Primary {
      * Setter for property planets.
      * @param planets New value of property planets.
      */
-    override var planets: MutableList<Planet> = ArrayList()
+    override var planets: SortedList<Planet, Double> = SortedList(ArrayList<Planet>(), Planet::a)
 
     /**
      * Holds value of property rightAscension.

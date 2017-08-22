@@ -53,7 +53,6 @@ package dole
 
 import iburrell.accrete.nextDouble
 import java.util.*
-import java.util.Comparator.comparing
 
 /**
  * Dole.c - Planetary accretion algorithm, Icarus V 13 (1978)
@@ -85,27 +84,17 @@ internal constructor(private val random: Random) {
     /**
      * AO * sqrt(star->mass)
      */
-    protected var A: Double = 0.toDouble()
-
-    /**
-     * Minimum radius of planetismal injection, = MINRADIUS, MAXRADIUS
-     */
-    private var minRadius: Double = 0.toDouble()
-
-    /**
-     * Max radius of injection . . . modified by luminosity of primary
-     */
-    private var maxRadius: Double = 0.toDouble()
+    private var A: Double = 0.toDouble()
 
     /**
      * Linked list of dust records
      */
-    private lateinit var list0: List<DustRecord>
+    private lateinit var dust: List<DustRecord>
 
     /**
-     * Linked list of dust records
+     * Linked list of gas records
      */
-    private lateinit var list2: List<DustRecord>
+    private lateinit var gas: List<DustRecord>
 
     /**
      * Critical mass for gas accretion
@@ -123,9 +112,7 @@ internal constructor(private val random: Random) {
      * @param r The orbital radius to get the density for
      * @return The calculated density
      */
-    private fun getDensity(r: Double): Double {
-        return A * Math.exp(-DoleConstants.ALPHA * Math.pow(r, DoleConstants.GAMMA))
-    }
+    private fun getDensity(r: Double) = A * Math.exp(-DoleConstants.ALPHA * Math.pow(r, DoleConstants.GAMMA))
 
     /**
      * Get the gravitational reach for a particular mass at a given orbital radius
@@ -134,29 +121,7 @@ internal constructor(private val random: Random) {
      * @param mass   The mass of interest
      * @return The calculated reach
      */
-    private fun getReach(radius: Double, mass: Double): Double {
-        return radius * Math.pow(mass / (1.0 + mass), 0.25)
-    }
-
-    /**
-     * Adds a planet to the list and keeps it sorted into order by increasing
-     * distance from the star.
-     *
-     * @param list The list of planets
-     * @param newp The new planet to be added
-     */
-    private fun addPlanet(list: MutableList<Planet>, newp: Planet) {
-        list.add(newp)
-        list.sortWith(comparing<Planet, Double>(Planet::a))
-    }
-
-    /**
-     * Initialize the dust band information
-     */
-    private fun initBands() {
-        list0 = listOf(DustRecord(minRadius, maxRadius))
-        list2 = listOf(DustRecord(minRadius, maxRadius))
-    }
+    private fun getReach(radius: Double, mass: Double) = radius * Math.pow(mass / (1.0 + mass), 0.25)
 
     /**
      * Create a new planet around the star
@@ -172,8 +137,8 @@ internal constructor(private val random: Random) {
         gasMass = 0.0
         e = (1.0 - Math.pow(random.nextDouble(0.01..1.00), 0.077)) * 1.5
 
-        val b = list0.random(random)!!
-        a = (b.innerEdge + (b.outerEdge - b.innerEdge)) * Math.pow(random.nextDouble(), 2.0)
+        val b = dust.random(random)!!
+        a = (b.start + (b.endInclusive - b.start)) * Math.pow(random.nextDouble(), 2.0)
         rMin = a
         rMax = a
     }
@@ -271,19 +236,19 @@ internal constructor(private val random: Random) {
 
         return list.flatMap {
             // check for trivial rejection
-            if (max <= it.innerEdge || min >= it.outerEdge) {
+            if (max <= it.start || min >= it.endInclusive) {
                 listOf(it)
-            } else if (max < it.outerEdge) {
+            } else if (max < it.endInclusive) {
                 val added = mutableListOf<DustRecord>()
-                if (min > it.innerEdge) {
+                if (min > it.start) {
                     // interval within band, so split it
-                    added += it.copy(outerEdge = min)
+                    added += it.copy(endInclusive = min)
                 }
-                it.innerEdge = max
+                it.start = max
                 added + it
-            } else if (min > it.innerEdge) {
+            } else if (min > it.start) {
                 // interval overlaps outer edge
-                it.outerEdge = min
+                it.endInclusive = min
                 listOf(it)
             } else {
                 emptyList()
@@ -298,14 +263,9 @@ internal constructor(private val random: Random) {
      * @param p    The planet being constructed
      */
     private fun evolvePlanet(star: Primary, p: DolePlanetRecord) {
-        var perihelion: Double
-        var aphelion: Double
-        var previousMass: Double
-        var swept: Double
-
         /* Our planetoid will accrete all matter within it's orbit . . . */
-        perihelion = p.a * (1 - p.e)
-        aphelion = p.a * (1 + p.e)
+        var perihelion = p.a * (1 - p.e)
+        var aphelion = p.a * (1 + p.e)
 
         this.criticalMass = DoleConstants.B * Math.pow(Math.sqrt(star.luminosity) / perihelion, 0.75)
 
@@ -326,10 +286,10 @@ internal constructor(private val random: Random) {
             /* Reach(perihelion, p->mass); */
             p.rMin = perihelion - p.reach
 
-            previousMass = p.mass
+            val previousMass = p.mass
 
             /* accrete dust */
-            swept = sweptMass(this.list0, 0, p)
+            var swept = sweptMass(this.dust, 0, p)
 
             p.dustMass = Math.max(p.dustMass, swept)
             p.gasMass = Math.max(p.gasMass, swept * this.random.nextDouble(p.mass))
@@ -339,7 +299,7 @@ internal constructor(private val random: Random) {
                 // it's a gas giant
                 p.isGasGiant = true
 
-                swept = sweptMass(this.list2, 2, p)
+                swept = sweptMass(this.gas, 2, p)
                 p.gasMass = Math.max(p.gasMass, swept)
             }
 
@@ -353,14 +313,14 @@ internal constructor(private val random: Random) {
         /* You'll notice we didn't modify the band structure at all while
          * accreting matter, we do that now.
          */
-        list0 = updateBands(this.list0, p)
+        dust = updateBands(this.dust, p)
 
         if (p.isGasGiant) {
             /* do something with the gas density */
             /* In this case, it's cheaper to just recompute the accreted gas
              * in each iteration as we only use the one gas band.
              */
-            list2 = updateBands(this.list2, p)
+            gas = updateBands(this.gas, p)
         }
     }
 
@@ -474,25 +434,25 @@ internal constructor(private val random: Random) {
         star.rEcosphereOuter = star.rEcosphere * 1.1
 
         /* A little initialization . . . */
-        this.A = DoleConstants.AO * Math.sqrt(star.mass)
+        A = DoleConstants.AO * Math.sqrt(star.mass)
 
-        minRadius = DoleConstants.MINRADIUS * Math.pow(star.mass, 0.33)
-        maxRadius = DoleConstants.MAXRADIUS * Math.pow(star.mass, 0.33)
+        val radius = DoleConstants.MINRADIUS * Math.pow(star.mass, 0.33)..DoleConstants.MAXRADIUS * Math.pow(star.mass, 0.33)
 
-        initBands()
+        dust = listOf(DustRecord(radius.start, radius.endInclusive))
+        gas = listOf(DustRecord(radius.start, radius.endInclusive))
 
         /* . . . and we're off to play God. */
-        while (!list0.isEmpty()) {
+        while (!dust.isEmpty()) {
             val p = createPlanet(star)
 
             evolvePlanet(star, p)
 
-            addPlanet(star.planets, p)
+            star.planets.add(p)
 
             checkCoalesence(star, p)
         }
 
-        val li = star.planets.listIterator()
+        val li = star.planets.iterator()
 
         while (li.hasNext()) {
             val pl = li.next()

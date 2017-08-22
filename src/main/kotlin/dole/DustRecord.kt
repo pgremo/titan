@@ -57,4 +57,4 @@ package dole
  * @author martin
  * @version $Id: DustRecord.java,v 1.3 2006-07-06 06:58:33 martin Exp $
  */
-data class DustRecord(var innerEdge: Double, var outerEdge: Double)
+data class DustRecord(override var start: Double, override var endInclusive: Double) : ClosedRange<Double>

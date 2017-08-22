@@ -163,7 +163,7 @@ interface Primary {
      *
      * @param planets New value of property planets.
      */
-    var planets: MutableList<Planet>
+    var planets: SortedList<Planet, Double>
 
     /**
      * Getter for property r_ecosphere.
