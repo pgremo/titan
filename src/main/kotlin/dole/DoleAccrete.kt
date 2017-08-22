@@ -281,7 +281,8 @@ internal constructor(private val random: Random) {
                 // it's a gas giant
                 p.isGasGiant = true
 
-                swept = sweptMass(gas, p, { dustDensity(it) * DoleConstants.K / ((DoleConstants.K - 1) * Math.pow(criticalMass / p.mass, DoleConstants.BETA) + 1) }, { it.rMin..it.rMax })
+                val gasEffect = DoleConstants.K / ((DoleConstants.K - 1) * Math.pow(criticalMass / p.mass, DoleConstants.BETA) + 1)
+                swept = sweptMass(gas, p, { dustDensity(it) * gasEffect }, { it.rMin..it.rMax })
                 p.gasMass = Math.max(p.gasMass, swept)
             }
 
