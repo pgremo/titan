@@ -50,7 +50,6 @@
  */
 package dole
 
-import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 
 /**
@@ -180,7 +179,7 @@ protected constructor() {
             temp2 = Constants.A2_20 * Math.pow(atomicWeight, 4.0 / 3.0) * Math.pow(
                     Constants.SOLAR_MASS_IN_GRAMS, 2.0 / 3.0)
             temp2 = temp2 * Math.pow(mass, 2.0 / 3.0)
-            temp2 = temp2 / (Constants.A1_20 * MathUtils.pow2(atomicNum))
+            temp2 = temp2 / (Constants.A1_20 * Math.pow(atomicNum, 2.0))
             temp2 = 1.0 + temp2
             temp = temp / temp2
             temp = temp * Math.pow(mass, 1.0 / 3.0) / Constants.CM_PER_KM
@@ -206,7 +205,7 @@ protected constructor() {
             var temp: Double
 
             temp = Math.pow(mass * Constants.SUN_MASS_IN_EARTH_MASSES, 1.0 / 8.0)
-            temp = temp * MathUtils.fourthRoot(rEcosphere / orbRadius)
+            temp = temp * Math.pow(rEcosphere / orbRadius, 1.0 / 4.0)
 
             return if (gasGiant) {
                 temp * 1.2
@@ -226,7 +225,7 @@ protected constructor() {
         fun getVolumeDensity(mass: Double, equatorialRadius: Double): Double {
             val massG = mass * Constants.SOLAR_MASS_IN_GRAMS
             val equatRadius = equatorialRadius * Constants.CM_PER_KM
-            val volume = 4.0 * Math.PI * MathUtils.pow3(equatRadius) / 3.0
+            val volume = 4.0 * Math.PI * Math.pow(equatRadius, 3.0) / 3.0
 
             return massG / volume
         }
