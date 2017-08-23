@@ -262,7 +262,6 @@ internal constructor(private val random: Random) {
              * aren't that different so we'll cut out some computation.
              */
             p.reach = getReach(p.a, p.mass)
-
             /* Reach(aphelion, p->mass); */
             p.rMax = aphelion + p.reach
             /* Reach(perihelion, p->mass); */

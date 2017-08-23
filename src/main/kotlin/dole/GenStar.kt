@@ -50,8 +50,6 @@
  */
 package dole
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
 import java.util.*
 
 /**
@@ -300,7 +298,6 @@ class GenStar {
                 sun.mass = 0.7 * this.utils!!.nextDouble() + 0.6
 
             else -> {
-                log.error("Assertion error, reached unexpected statement")
                 throw AssertionError("Unexpected program state")
             }
         }
@@ -358,13 +355,7 @@ class GenStar {
      * not one of those known to this class.
      */
     fun generateStar(specClass: String): Primary {
-        val theClass = classMap[specClass]
-
-        if (theClass == null) {
-            log.error("Unknown spectral class requested in GenStar: " + specClass)
-
-            throw IllegalArgumentException("Unknown spectral class: " + specClass)
-        }
+        val theClass = classMap[specClass] ?: throw IllegalArgumentException("Unknown spectral class: " + specClass)
 
         return generateStar(theClass)
     }
@@ -413,9 +404,6 @@ class GenStar {
         // RequireThis OFF: N_SPC_CLASS
         // RequireThis OFF: N_MAG_CLASS
         // RequireThis OFF: N_LUM_CLASS
-
-        /** Our logging object  */
-        private val log = LogFactory.getLog(GenStar::class.java)
 
         // MS: These should be enums but they were used to index arrays directly so
         // I left them as constants for now as they were in the original code

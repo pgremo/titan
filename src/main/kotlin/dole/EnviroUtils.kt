@@ -50,8 +50,6 @@
  */
 package dole
 
-import org.apache.commons.logging.LogFactory
-
 /**
  * Computations factored out of the Enviro class
  *
@@ -62,8 +60,6 @@ class EnviroUtils {
 
 
     companion object {
-        /** Our logger object  */
-        private val log = LogFactory.getLog(EnviroUtils::class.java)
 
         // MagicNumber OFF
 

@@ -51,7 +51,6 @@
  */
 package dole
 
-import org.apache.commons.logging.LogFactory
 import java.util.*
 
 /**
@@ -221,8 +220,4 @@ class DolePlanetStats(utils: Random) {
         p.gasMass = p.gasMass / 329390.0
     }
 
-    companion object {
-        /** Our logging object  */
-        private val log = LogFactory.getLog(DolePlanetStats::class.java)
-    }
 }

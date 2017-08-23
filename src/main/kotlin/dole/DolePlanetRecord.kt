@@ -51,9 +51,6 @@
  */
 package dole
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-
 /**
  * A bean class representing a planet for the Dole accretion code.
  *
@@ -102,8 +99,4 @@ class DolePlanetRecord : BasicPlanet() {
      */
     var reach: Double = 0.toDouble()
 
-    companion object {
-        /** Our logging object  */
-        private val log = LogFactory.getLog(DolePlanetRecord::class.java)
-    }
 }
