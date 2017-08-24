@@ -343,18 +343,14 @@ internal constructor(private val random: Random) {
      * @param p    The planet being considered
      */
     private fun checkCoalesence(star: Primary, p: DolePlanetRecord) {
+        val planets = star.planets
+
         var merged = true
 
         while (merged) {
             merged = false
 
-            val planets = star.planets
-
             var index = planets.indexOf(p)
-
-            if (index < 0) {
-                throw AssertionError("Did not find the planet in the list")
-            }
 
             var pindex = index - 1
 
@@ -373,7 +369,6 @@ internal constructor(private val random: Random) {
             }
 
             if (merged) {
-                // then this could have changed
                 index = planets.indexOf(p)
             }
 
@@ -418,10 +413,11 @@ internal constructor(private val random: Random) {
         /* A little initialization . . . */
         A = DoleConstants.AO * Math.sqrt(star.mass)
 
-        val radius = DoleConstants.MINRADIUS * Math.pow(star.mass, 0.33)..DoleConstants.MAXRADIUS * Math.pow(star.mass, 0.33)
+        val radius = Math.pow(star.mass, 0.33).let { DoleConstants.MINRADIUS * it..DoleConstants.MAXRADIUS * it }
 
-        dust = listOf(DustRecord(radius.start, radius.endInclusive))
-        gas = listOf(DustRecord(radius.start, radius.endInclusive))
+        val record = DustRecord(radius.start, radius.endInclusive)
+        dust = listOf(record)
+        gas = listOf(record.copy())
 
         /* . . . and we're off to play God. */
         while (!dust.isEmpty()) {
