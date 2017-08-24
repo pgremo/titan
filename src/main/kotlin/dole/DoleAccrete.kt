@@ -124,7 +124,7 @@ internal constructor(private val random: Random) {
      * @param star The star of this solar system
      * @return A planet record for the new planet
      */
-    private fun createPlanet(star: Primary) = DolePlanetRecord().apply {
+    private fun createPlanet(star: Primary) = Planet().apply {
         primary = star
         isGasGiant = false
         mass = DoleConstants.M0
@@ -146,7 +146,7 @@ internal constructor(private val random: Random) {
      * @param p        The planet record for the planet being constructed
      * @return The amount of mass swept from the dust or gas
      */
-    private fun sweptMass(list: List<DustRecord>, p: DolePlanetRecord, density: (Double) -> Double, rangeF: (DolePlanetRecord) -> ClosedRange<Double>): Double {
+    private fun sweptMass(list: List<DustRecord>, p: Planet, density: (Double) -> Double, rangeF: (Planet) -> ClosedRange<Double>): Double {
         var mass = 0.0
 
         val range = rangeF(p)
@@ -213,7 +213,7 @@ internal constructor(private val random: Random) {
      * @param list The dust list to be updated
      * @param p    The planet being constructed
      */
-    private fun updateBands(list: List<DustRecord>, p: DolePlanetRecord): List<DustRecord> {
+    private fun updateBands(list: List<DustRecord>, p: Planet): List<DustRecord> {
         val min = p.rMin
         val max = p.rMax
 
@@ -245,7 +245,7 @@ internal constructor(private val random: Random) {
      * @param star The star for this solar system
      * @param p    The planet being constructed
      */
-    private fun evolvePlanet(star: Primary, p: DolePlanetRecord) {
+    private fun evolvePlanet(star: Primary, p: Planet) {
         /* Our planetoid will accrete all matter within it's orbit . . . */
         var perihelion = p.a * (1 - p.e)
         var aphelion = p.a * (1 + p.e)
@@ -317,7 +317,7 @@ internal constructor(private val random: Random) {
      * @param p2 The second planet in the collision
      * @return A planet record for the resulting merged body
      */
-    private fun mergePlanets(p1: DolePlanetRecord, p2: DolePlanetRecord): Planet {
+    private fun mergePlanets(p1: Planet, p2: Planet): Planet {
         val perihelion: Double = p2.a * (1 - p2.e)
         val aphelion: Double = p2.a * (1 + p2.e)
 
@@ -342,7 +342,7 @@ internal constructor(private val random: Random) {
      * @param star The star for the solar system
      * @param p    The planet being considered
      */
-    private fun checkCoalesence(star: Primary, p: DolePlanetRecord) {
+    private fun checkCoalesence(star: Primary, p: Planet) {
         val planets = star.planets
 
         var merged = true
@@ -355,7 +355,7 @@ internal constructor(private val random: Random) {
             var pindex = index - 1
 
             while (pindex >= 0) {
-                val p1 = planets[pindex] as DolePlanetRecord
+                val p1 = planets[pindex]
 
                 if (p1.rMax >= p.rMin) {
                     planets[pindex] = mergePlanets(p1, p)
@@ -375,7 +375,7 @@ internal constructor(private val random: Random) {
             pindex = index + 1
 
             while (pindex < planets.size) {
-                val p1 = planets[pindex] as DolePlanetRecord
+                val p1 = planets[pindex]
 
                 if (p1.rMin <= p.rMax) {
                     planets[pindex] = mergePlanets(p1, p)
