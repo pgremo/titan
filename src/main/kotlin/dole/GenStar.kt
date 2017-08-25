@@ -302,10 +302,10 @@ class GenStar {
             }
         }
 
-        sun.rEcosphere = Math.sqrt(sun.luminosity)
+        sun.ecosphere = Math.sqrt(sun.luminosity)
         /* next calc is approximate */
-        sun.rEcosphereInner = 0.93 * sun.rEcosphere
-        sun.rEcosphereOuter = 1.1 * sun.rEcosphere
+        sun.ecosphereInner = 0.93 * sun.ecosphere
+        sun.ecosphereOuter = 1.1 * sun.ecosphere
 
         // assign these parameters entirely randomly for now
 

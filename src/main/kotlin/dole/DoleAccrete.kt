@@ -125,7 +125,6 @@ internal constructor(private val random: Random) {
      * @return A planet record for the new planet
      */
     private fun createPlanet(star: Primary) = Planet().apply {
-        primary = star
         isGasGiant = false
         mass = DoleConstants.M0
         dustMass = DoleConstants.M0
@@ -406,9 +405,9 @@ internal constructor(private val random: Random) {
             star.luminosity = EnviroUtils.getLuminosity(star.mass)
         }
 
-        star.rEcosphere = Math.sqrt(star.luminosity)
-        star.rEcosphereInner = star.rEcosphere * 0.93
-        star.rEcosphereOuter = star.rEcosphere * 1.1
+        star.ecosphere = Math.sqrt(star.luminosity)
+        star.ecosphereInner = star.ecosphere * 0.93
+        star.ecosphereOuter = star.ecosphere * 1.1
 
         /* A little initialization . . . */
         A = DoleConstants.AO * Math.sqrt(star.mass)

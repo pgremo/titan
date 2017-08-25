@@ -166,7 +166,7 @@ class DolePlanetStats(utils: Random) {
         /* fiddle densities to likely values */
         if (p.isGasGiant) {
             val dm = Math.pow(p.dustMass, 0.125) * Math.pow(
-                    star.rEcosphere / p.a, 0.25) * 5.5
+                    star.ecosphere / p.a, 0.25) * 5.5
 
             val dg = (0.5 + 0.5 * this.utils!!.nextDouble()) * Math.sqrt(
                     273 / p.highTemperature)
@@ -180,7 +180,7 @@ class DolePlanetStats(utils: Random) {
         } else {
             /* tonnes / m**3 */
             p.density = Math.pow(p.mass, 0.125) * Math.pow(
-                    star.rEcosphere / p.a, 0.25) * 5.5
+                    star.ecosphere / p.a, 0.25) * 5.5
 
             k2 = 0.33
         }
