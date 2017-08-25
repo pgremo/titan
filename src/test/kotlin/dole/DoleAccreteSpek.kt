@@ -12,7 +12,7 @@ object DoleAccreteSpek : Spek({
     val doleAccrete = DoleAccrete(Random(1))
     given("Accrete with a specific random seed") {
 
-        val sun = BasicPrimary().apply {
+        val sun = Primary().apply {
             mass = 1.0
             age = 5e9
         }

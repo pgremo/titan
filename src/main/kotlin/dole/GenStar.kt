@@ -248,7 +248,7 @@ class GenStar {
      * @return A randomly generated star of the specified class
      */
     private fun generateStar(magClass: Int, specClass: Int): Primary {
-        val sun = BasicPrimary()
+        val sun = Primary()
 
         var loopI = 0
         var t: Double

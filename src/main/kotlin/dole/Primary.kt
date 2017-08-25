@@ -46,185 +46,208 @@
 /*
  * Primary.java
  *
- * Created on 15 January 2006, 22:00
+ * Created on December 21, 2005, 10:24 AM
+ *
  */
 package dole
 
 /**
- * Interface that describes a star
+ * Class that details a star
  *
- * @author  martin
- * @version $Id: Primary.java,v 1.5 2006-07-06 06:58:33 martin Exp $
+ * @author martin
+ * @version $Id: BasicPrimary.java,v 1.10 2006-07-06 06:58:33 martin Exp $
  */
-interface Primary {
+/** Creates a new instance of Primary  */
+class Primary {
     /**
-     * Getter for property absoluteMagnitude.
-     *
-     * @return Value of property absoluteMagnitude.
+     * Holds value of property luminosity.
      */
-    /**
-     * Setter for property absoluteMagnitude.
-     *
-     * @param absoluteMagnitude New value of property absoluteMagnitude.
-     */
-    var absoluteMagnitude: Double
-
-    /**
-     * Getter for property age.
-     *
-     * @return Value of property age.
-     */
-    /**
-     * Setter for property age.
-     *
-     * @param age New value of property age.
-     */
-    var age: Double
-
-    /**
-     * Getter for property innermostPlanet.
-     *
-     * @return Value of property innermostPlanet.
-     */
-    /**
-     * Setter for property innermostPlanet.
-     *
-     * @param innermostPlanet New value of property innermostPlanet.
-     */
-    var innermostPlanet: Planet?
-
-    /**
-     * Getter for property life.
-     *
-     * @return Value of property life.
-     */
-    /**
-     * Setter for property life.
-     *
-     * @param life New value of property life.
-     */
-    var life: Double
-
     /**
      * Getter for property luminosity.
-     *
      * @return Value of property luminosity.
      */
     /**
      * Setter for property luminosity.
-     *
      * @param luminosity New value of property luminosity.
      */
-    var luminosity: Double
+     var luminosity: Double = 0.toDouble()
 
     /**
-     * Getter for property luminosityClass.
-     *
-     * @return Value of property luminosityClass.
+     * Holds value of property mass.
      */
-    /**
-     * Setter for property luminosityClass.
-     *
-     * @param luminosityClass New value of property luminosityClass.
-     */
-    var luminosityClass: String?
-
     /**
      * Getter for property mass.
-     *
      * @return Value of property mass.
      */
     /**
      * Setter for property mass.
-     *
      * @param mass New value of property mass.
      */
-    var mass: Double
+     var mass: Double = 0.toDouble()
 
     /**
-     * Getter for property name.
-     *
-     * @return Value of property name.
+     * Holds value of property life.
      */
     /**
-     * Setter for property name.
-     *
-     * @param name New value of property name.
+     * Getter for property life.
+     * @return Value of property life.
      */
-    var name: String?
+    /**
+     * Setter for property life.
+     * @param life New value of property life.
+     */
+     var life: Double = 0.toDouble()
 
     /**
-     * Getter for property planets.
-     *
-     * @return Value of property planets.
+     * Holds value of property age.
      */
     /**
-     * Setter for property planets.
-     *
-     * @param planets New value of property planets.
+     * Getter for property age.
+     * @return Value of property age.
      */
-    var planets: SortedList<Planet, Double>
+    /**
+     * Setter for property age.
+     * @param age New value of property age.
+     */
+     var age: Double = 0.toDouble()
 
     /**
-     * Getter for property r_ecosphere.
+     * Holds value of property rEcosphere.
+     */
+    /**
+     * Getter for property rEcosphere.
      *
-     * @return Value of property r_ecosphere.
+     * @return Value of property rEcosphere.
      */
     /**
      * Setter for property rEcosphere.
      *
      * @param rEcosphere New value of property rEcosphere.
      */
-    var rEcosphere: Double
+     var rEcosphere: Double = 0.toDouble()
 
     /**
-     * Getter for property r_ecosphere_inner.
-     *
-     * @return Value of property r_ecosphere_inner.
+     * Holds value of property name.
      */
     /**
-     * Setter for property rEcosphereInner.
-     *
-     * @param rEcosphereInner New value of property r_ecosphere_inner.
+     * Getter for property name.
+     * @return Value of property name.
      */
-    var rEcosphereInner: Double
+    /**
+     * Setter for property name.
+     * @param name New value of property name.
+     */
+     var name: String? = null
 
     /**
-     * Getter for property r_ecosphere_outer.
-     *
-     * @return Value of property r_ecosphere_outer.
+     * Holds value of property innermostPlanet.
      */
     /**
-     * Setter for property rEcosphereOuter.
-     *
-     * @param rEcosphereOuter New value of property rEcosphereOuter.
+     * Getter for property innermostPlanet.
+     * @return Value of property innermostPlanet.
      */
-    var rEcosphereOuter: Double
+    /**
+     * Setter for property innermostPlanet.
+     * @param innermostPlanet New value of property innermostPlanet.
+     */
+     var innermostPlanet: Planet? = null
 
+    /**
+     * Holds value of property spectralClass.
+     */
     /**
      * Getter for property spectralClass.
-     *
      * @return Value of property spectralClass.
      */
     /**
      * Setter for property spectralClass.
-     *
      * @param spectralClass New value of property spectralClass.
      */
-    var spectralClass: String?
+     var spectralClass: String? = null
 
     /**
+     * Holds value of property spectralSubclass.
+     */
+    /**
      * Getter for property spectralSubclass.
-     *
      * @return Value of property spectralSubclass.
      */
     /**
      * Setter for property spectralSubclass.
-     *
      * @param spectralSubclass New value of property spectralSubclass.
      */
-    var spectralSubclass: Int
+     var spectralSubclass: Int = 0
 
+    /**
+     * Holds value of property absoluteMagnitude.
+     */
+    /**
+     * Getter for property absoluteMagnitude.
+     * @return Value of property absoluteMagnitude.
+     */
+    /**
+     * Setter for property absoluteMagnitude.
+     * @param absoluteMagnitude New value of property absoluteMagnitude.
+     */
+     var absoluteMagnitude: Double = 0.toDouble()
+
+    /**
+     * Holds value of property luminosityClass.
+     */
+    /**
+     * Getter for property luminosityClass.
+     * @return Value of property luminosityClass.
+     */
+    /**
+     * Setter for property luminosityClass.
+     * @param luminosityClass New value of property luminosityClass.
+     */
+     var luminosityClass: String? = null
+
+    /**
+     * Holds value of property r_ecosphereInner.
+     */
+    /**
+     * Getter for property rEcosphereInner.
+     * @return Value of property rEcosphereInner.
+     */
+    /**
+     * Setter for property rEcosphereInner.
+     *
+     * @param rEcosphereInner The inner ecosphere radius
+     */
+     var rEcosphereInner: Double = 0.toDouble()
+
+    /**
+     * Holds value of property r_ecosphereOuter.
+     */
+    /**
+     * Getter for property rEcosphereOuter.
+     * @return Value of property rEcosphereOuter.
+     */
+    /**
+     * Setter for property r_ecosphere_outer.
+     *
+     * @param rEcosphereOuter The outer ecosphere radius
+     */
+     var rEcosphereOuter: Double = 0.toDouble()
+
+    /**
+     * Holds value of property planets.
+     */
+    /**
+     * Getter for property planets.
+     * @return Value of property planets.
+     */
+    /**
+     * Setter for property planets.
+     * @param planets New value of property planets.
+     */
+     var planets: SortedList<Planet, Double> = SortedList(ArrayList<Planet>(), Planet::a)
+
+    /**
+     * Holds value of property rightAscension.
+     */
     /**
      * Getter for property rightAscension.
      * @return Value of property rightAscension.
@@ -233,8 +256,11 @@ interface Primary {
      * Setter for property rightAscension.
      * @param rightAscension New value of property rightAscension.
      */
-    var rightAscension: Double
+     var rightAscension: Double = 0.toDouble()
 
+    /**
+     * Holds value of property declination.
+     */
     /**
      * Getter for property declination.
      * @return Value of property declination.
@@ -243,8 +269,11 @@ interface Primary {
      * Setter for property declination.
      * @param declination New value of property declination.
      */
-    var declination: Double
+     var declination: Double = 0.toDouble()
 
+    /**
+     * Holds value of property distance.
+     */
     /**
      * Getter for property distance.
      * @return Value of property distance.
@@ -253,8 +282,11 @@ interface Primary {
      * Setter for property distance.
      * @param distance New value of property distance.
      */
-    var distance: Double
+     var distance: Double = 0.toDouble()
 
+    /**
+     * Holds value of property hipparcusNumber.
+     */
     /**
      * Getter for property hipparcusNumber.
      * @return Value of property hipparcusNumber.
@@ -263,5 +295,5 @@ interface Primary {
      * Setter for property hipparcusNumber.
      * @param hipparcusNumber New value of property hipparcusNumber.
      */
-    var hipparcusNumber: Int
+     var hipparcusNumber: Int = 0
 }
