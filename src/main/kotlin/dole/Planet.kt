@@ -111,7 +111,7 @@ data class Planet(
          * Setter for property mass.
          * @param mass New value of property mass.
          */
-        var mass: Double = 0.toDouble(),
+        var mass: Double = DoleConstants.M0,
         /**
          * Setter for property gasGiant.
          * @param gasGiant New value of property gasGiant.
@@ -121,7 +121,7 @@ data class Planet(
          * Setter for property dustMass.
          * @param dustMass New value of property dustMass.
          */
-        var dustMass: Double = 0.toDouble(),
+        var dustMass: Double = DoleConstants.M0,
         /**
          * Setter for property gasMass.
          * @param gasMass New value of property gasMass.

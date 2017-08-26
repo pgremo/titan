@@ -121,21 +121,12 @@ internal constructor(private val random: Random) {
     /**
      * Create a new planet around the star
      *
-     * @param star The star of this solar system
      * @return A planet record for the new planet
      */
-    private fun createPlanet(star: Primary) = Planet().apply {
-        isGasGiant = false
-        mass = DoleConstants.M0
-        dustMass = DoleConstants.M0
-        gasMass = 0.0
-        e = (1.0 - Math.pow(random.nextDouble(0.01..1.00), 0.077)) * 1.5
-
-        val b = dust.random(random)!!
-        a = (b.start + (b.endInclusive - b.start)) * Math.pow(random.nextDouble(), 2.0)
-        rMin = a
-        rMax = a
-    }
+    private fun createPlanet() = Planet(
+            e = (1.0 - Math.pow(random.nextDouble(0.01..1.00), 0.077)) * 1.5,
+            a = random.nextDouble(dust.random(random)!!)
+    )
 
     /**
      * Compute the amount of mass (of dust or gas) which the planet p will
@@ -246,15 +237,12 @@ internal constructor(private val random: Random) {
      */
     private fun evolvePlanet(star: Primary, p: Planet) {
         /* Our planetoid will accrete all matter within it's orbit . . . */
-        var perihelion = p.a * (1 - p.e)
-        var aphelion = p.a * (1 + p.e)
+        val perihelion = p.a * (1 - p.e)
+        val aphelion = p.a * (1 + p.e)
         val criticalMass = DoleConstants.B * Math.pow(Math.sqrt(star.luminosity) / perihelion, 0.75)
 
         // this construct always brings a sense of dread
         while (true) {
-
-            perihelion = p.a * (1 - p.e)
-            aphelion = p.a * (1 + p.e)
 
             /* . . . as well as within it's gravitational reach.  We should be
              * computing the reach at aphelion and at perihelion, but they
@@ -400,27 +388,27 @@ internal constructor(private val random: Random) {
      * @param star The star in the solar system.
      */
     fun createSystem(star: Primary) {
-        // fill in luminosity and ecosphere if not already set
-        if (star.luminosity == 0.0) {
-            star.luminosity = EnviroUtils.getLuminosity(star.mass)
-        }
+        star.apply{
+            // fill in luminosity and ecosphere if not already set
+            if (luminosity == 0.0) {
+                luminosity = EnviroUtils.getLuminosity(star.mass)
+            }
 
-        star.ecosphere = Math.sqrt(star.luminosity)
-        star.ecosphereInner = star.ecosphere * 0.93
-        star.ecosphereOuter = star.ecosphere * 1.1
+            ecosphere = Math.sqrt(star.luminosity)
+            ecosphereInner = ecosphere * 0.93
+            ecosphereOuter = ecosphere * 1.1
+        }
 
         /* A little initialization . . . */
         A = DoleConstants.AO * Math.sqrt(star.mass)
 
-        val radius = Math.pow(star.mass, 0.33).let { DoleConstants.MINRADIUS * it..DoleConstants.MAXRADIUS * it }
-
-        val record = DustRecord(radius.start, radius.endInclusive)
+        val record = Math.pow(star.mass, 0.33).let { DustRecord(DoleConstants.MINRADIUS * it, DoleConstants.MAXRADIUS * it) }
         dust = listOf(record)
         gas = listOf(record.copy())
 
         /* . . . and we're off to play God. */
         while (!dust.isEmpty()) {
-            val p = createPlanet(star)
+            val p = createPlanet()
 
             evolvePlanet(star, p)
 
