@@ -328,7 +328,7 @@ class GenStar {
 
         val rnd = this.utils!!.nextDouble()
 
-        var loopI: Int = 0
+        var loopI = 0
         var loopJ: Int
 
         while (loopI < N_MAG_CLASS && i < 0) {

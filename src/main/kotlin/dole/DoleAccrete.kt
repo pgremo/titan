@@ -387,18 +387,7 @@ internal constructor(private val random: Random) {
      *
      * @param star The star in the solar system.
      */
-    fun createSystem(star: Primary) {
-        star.apply{
-            // fill in luminosity and ecosphere if not already set
-            if (luminosity == 0.0) {
-                luminosity = EnviroUtils.getLuminosity(star.mass)
-            }
-
-            ecosphere = Math.sqrt(star.luminosity)
-            ecosphereInner = ecosphere * 0.93
-            ecosphereOuter = ecosphere * 1.1
-        }
-
+    fun createSystem(star: Primary): List<Planet> {
         /* A little initialization . . . */
         A = DoleConstants.AO * Math.sqrt(star.mass)
 
@@ -428,5 +417,6 @@ internal constructor(private val random: Random) {
                 li.remove()
             }
         }
+        return star.planets
     }
 }

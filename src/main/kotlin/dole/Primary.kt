@@ -58,18 +58,18 @@ package dole
  * @version $Id: BasicPrimary.java,v 1.10 2006-07-06 06:58:33 martin Exp $
  */
 data class Primary(
-        var luminosity: Double = 0.toDouble(),
         var mass: Double = 0.toDouble(),
+        var luminosity: Double = EnviroUtils.getLuminosity(mass),
         var life: Double = 0.toDouble(),
         var age: Double = 0.toDouble(),
-        var ecosphere: Double = 0.toDouble(),
         var name: String? = null,
         var spectralClass: String? = null,
         var spectralSubclass: Int = 0,
         var absoluteMagnitude: Double = 0.toDouble(),
         var luminosityClass: String? = null,
-        var ecosphereInner: Double = 0.toDouble(),
-        var ecosphereOuter: Double = 0.toDouble(),
+        var ecosphere: Double = Math.sqrt(luminosity),
+        var ecosphereInner: Double = 0.93 * ecosphere,
+        var ecosphereOuter: Double = 1.1 * ecosphere,
         var planets: SortedList<Planet, Double> = SortedList(ArrayList(), Planet::a),
         var rightAscension: Double = 0.toDouble(),
         var declination: Double = 0.toDouble(),
