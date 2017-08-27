@@ -141,7 +141,7 @@ class DolePlanetStats(utils: Random) {
      * @param star The star in this sytem
      * @param p The planet to be processed
      */
-    fun computePlanetStats(star: Primary, p: Planet) {
+    fun computePlanetStats(star: Primary, p: Planet): Planet {
         val k2: Double
         var dw: Double = 1.0 * /* matter/mass distribution == density??? */
                 (p.radius / 6422.0) * /* in km */
@@ -218,6 +218,8 @@ class DolePlanetStats(utils: Random) {
         p.mass = p.mass / 329390.0
         p.dustMass = p.dustMass / 329390.0
         p.gasMass = p.gasMass / 329390.0
+
+        return p
     }
 
 }

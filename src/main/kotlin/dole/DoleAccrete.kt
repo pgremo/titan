@@ -53,6 +53,7 @@ package dole
 
 import iburrell.accrete.nextDouble
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Dole.c - Planetary accretion algorithm, Icarus V 13 (1978)
@@ -137,63 +138,15 @@ internal constructor(private val random: Random) {
      * @return The amount of mass swept from the dust or gas
      */
     private fun sweptMass(list: List<DustRecord>, p: Planet, density: (Double) -> Double, rangeF: (Planet) -> ClosedRange<Double>): Double {
-        var mass = 0.0
-
         val range = rangeF(p)
-        var min = range.start
-        var max = range.endInclusive
-
-        /* Used in gas accretion, it's constant so we can move it out here.  */
-
-        /*
-         * Modification #3
-         * Approximate density of material we're accreting.  This is actually
-         * the density at the planet's orbit, but it's (hopefully) close enough.
-         * It shouldn't matter for small planets, but large gas giants may
-         * accrete too much.
-         */
-
-        /*
-         * density = p->density;
-         * if (type == 2) density *= tGas;
-         */
-
-        /* Traverse the list, looking at each existing band to see what we
-         * would sweep up.
-         */
-        for ((innerEdge, outerEdge) in list) {
-            /* check for trivial rejection */
-            if (max < innerEdge || min > outerEdge) {
-                continue
-            }
-
-            max = Math.min(max, outerEdge)
-            min = Math.max(min, innerEdge)
-
-            val r = (min + max) / 2.0
-
-            /* Modification #3
-             * If we were really strict, we'd try to integrate the density
-             * function over the range (min, max) of orbital distance, but
-             * we'll use the average distance instead.
-             */
-
-            /* The swept mass is supposed to be computed using the gravitational
-             * reach and density at the minimum and maximum distances at which
-             * dust is encountered.  I'm cheating here by using the reach at
-             * the average orbital distance (computed in EvolvePlanet()) and
-             * the density at the center of the band.  The total swept mass is
-             * then 2 * reach        the height of the swept area
-             *      * (max - min)    the width of the swept area
-             *      2 * pi * r       revolve around center
-             *      * density        the density of the swept volume
-             * We can speed things up a bit by moving the constant values
-             * outside the loop.
-             */
-            mass += r * (max - min) * density(r)
-        }
-
-        return 2.0 * Math.PI * 2.0 * p.reach * mass
+        return 2.0 * Math.PI * 2.0 * p.reach * list
+                .filter { (innerEdge, outerEdge) -> range.endInclusive >= innerEdge && range.start <= outerEdge }
+                .fold(0.0) { acc, (innerEdge, outerEdge) ->
+                    val max = Math.min(range.endInclusive, outerEdge)
+                    val min = Math.max(range.start, innerEdge)
+                    val r = (min + max) / 2.0
+                    acc + r * (max - min) * density(r)
+                }
     }
 
     /**
@@ -237,8 +190,8 @@ internal constructor(private val random: Random) {
      */
     private fun evolvePlanet(star: Primary, p: Planet) {
         /* Our planetoid will accrete all matter within it's orbit . . . */
-        val perihelion = p.a * (1 - p.e)
-        val aphelion = p.a * (1 + p.e)
+        val perihelion = p.perihelion
+        val aphelion = p.aphelion
         val criticalMass = DoleConstants.B * Math.pow(Math.sqrt(star.luminosity) / perihelion, 0.75)
 
         // this construct always brings a sense of dread
@@ -305,8 +258,8 @@ internal constructor(private val random: Random) {
      * @return A planet record for the resulting merged body
      */
     private fun mergePlanets(p1: Planet, p2: Planet): Planet {
-        val perihelion: Double = p2.a * (1 - p2.e)
-        val aphelion: Double = p2.a * (1 + p2.e)
+        val perihelion: Double = p2.perihelion
+        val aphelion: Double = p2.aphelion
 
         p2.a = (p1.mass + p2.mass) / (p1.mass / p1.a + p2.mass / p2.a)
         p2.e = Math.min(p1.e, p2.e)
@@ -329,9 +282,7 @@ internal constructor(private val random: Random) {
      * @param star The star for the solar system
      * @param p    The planet being considered
      */
-    private fun checkCoalesence(star: Primary, p: Planet) {
-        val planets = star.planets
-
+    private fun checkCoalesence(planets: SortedList<Planet, Double>, star: Primary, p: Planet) {
         var merged = true
 
         while (merged) {
@@ -395,28 +346,19 @@ internal constructor(private val random: Random) {
         dust = listOf(record)
         gas = listOf(record.copy())
 
+        val planets = SortedList(ArrayList(), Planet::a)
+
         /* . . . and we're off to play God. */
         while (!dust.isEmpty()) {
             val p = createPlanet()
 
             evolvePlanet(star, p)
 
-            star.planets.add(p)
+            planets.add(p)
 
-            checkCoalesence(star, p)
+            checkCoalesence(planets, star, p)
         }
 
-        val li = star.planets.iterator()
-
-        while (li.hasNext()) {
-            val pl = li.next()
-
-            if (pl.mass > 2e-8) {
-                planetStats.computePlanetStats(star, pl)
-            } else {
-                li.remove()
-            }
-        }
-        return star.planets
+        return planets.filter { it.mass > 2e-8 }.map { planetStats.computePlanetStats(star, it) }
     }
 }

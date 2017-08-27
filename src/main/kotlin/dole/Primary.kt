@@ -70,7 +70,6 @@ data class Primary(
         var ecosphere: Double = Math.sqrt(luminosity),
         var ecosphereInner: Double = 0.93 * ecosphere,
         var ecosphereOuter: Double = 1.1 * ecosphere,
-        var planets: SortedList<Planet, Double> = SortedList(ArrayList(), Planet::a),
         var rightAscension: Double = 0.toDouble(),
         var declination: Double = 0.toDouble(),
         var distance: Double = 0.toDouble(),

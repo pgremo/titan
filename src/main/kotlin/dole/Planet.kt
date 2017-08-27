@@ -168,4 +168,11 @@ data class Planet(
          * @param lowTemperature New value of property lowTemperature.
          */
         var lowTemperature: Double = 0.toDouble()
-)
+) {
+
+    val perihelion: Double
+        get() = a * (1 - e)
+
+    val aphelion: Double
+        get() = a * (1 + e)
+}
