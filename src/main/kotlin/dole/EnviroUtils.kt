@@ -70,12 +70,10 @@ class EnviroUtils {
          * @return The stellar luminosity (Sol = 1.0)
          */
         fun getLuminosity(massRatio: Double): Double {
-            val n: Double
-
-            if (massRatio < 1.0) {
-                n = 1.75 * (massRatio - 0.1) + 3.325
+            val n: Double = if (massRatio < 1.0) {
+                1.75 * (massRatio - 0.1) + 3.325
             } else {
-                n = 0.5 * (2.0 - massRatio) + 4.4
+                0.5 * (2.0 - massRatio) + 4.4
             }
 
             return Math.pow(massRatio, n)
@@ -103,8 +101,7 @@ class EnviroUtils {
          * @return The orbital radius in km
          */
         fun getVolumeRadius(mass: Double, density: Double): Double {
-            val massG = mass * Constants.SOLAR_MASS_IN_GRAMS
-            val volume = massG / density
+            val volume = mass * Constants.SOLAR_MASS_IN_GRAMS / density
 
             return Math.pow(3.0 * volume / (4.0 * Math.PI), 1.0 / 3.0) / Constants.CM_PER_KM
         }
@@ -123,9 +120,6 @@ class EnviroUtils {
          * @return The radius of the planet in Kilometres
          */
         fun getKothariRadius(mass: Double, giant: Boolean, zone: Int): Double {
-            val temp1: Double
-            var temp: Double
-            var temp2: Double
             val atomicWeight: Double
             val atomicNum: Double
 
@@ -157,17 +151,20 @@ class EnviroUtils {
                 }
             }
 
+            val temp1: Double
             temp1 = atomicWeight * atomicNum
 
-            temp = 2.0 * Constants.BETA_20 * Math.pow(
-                    Constants.SOLAR_MASS_IN_GRAMS, 1.0 / 3.0) / (Constants.A1_20 * Math.pow(
-                    temp1, 1.0 / 3.0))
-
+            var temp2: Double
             temp2 = Constants.A2_20 * Math.pow(atomicWeight, 4.0 / 3.0) * Math.pow(
                     Constants.SOLAR_MASS_IN_GRAMS, 2.0 / 3.0)
             temp2 *= Math.pow(mass, 2.0 / 3.0)
-            temp2 /= (Constants.A1_20 * Math.pow(atomicNum, 2.0))
+            temp2 /= Constants.A1_20 * Math.pow(atomicNum, 2.0)
             temp2 += 1.0
+
+            var temp: Double
+            temp = 2.0 * Constants.BETA_20 * Math.pow(
+                    Constants.SOLAR_MASS_IN_GRAMS, 1.0 / 3.0) / (Constants.A1_20 * Math.pow(
+                    temp1, 1.0 / 3.0))
             temp /= temp2
             temp = temp * Math.pow(mass, 1.0 / 3.0) / Constants.CM_PER_KM
 

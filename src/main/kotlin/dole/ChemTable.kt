@@ -58,200 +58,82 @@ package dole
  * @author martin
  * @version $Id: ChemTable.java,v 1.4 2006-07-06 06:58:33 martin Exp $
  */
-class ChemTable {
-    /**
-     * Holds value of property number.
-     */
-    /**
-     * Getter for property number.
-     * @return Value of property number.
-     */
-    /**
-     * Setter for property number.
-     * @param number New value of property number.
-     */
-    var number: Int = 0
-
-    /**
-     * Holds value of property symbol.
-     */
-    /**
-     * Getter for property symbol.
-     * @return Value of property symbol.
-     */
-    /**
-     * Setter for property symbol.
-     * @param symbol New value of property symbol.
-     */
-    var symbol: String? = null
-
-    /**
-     * Holds value of property htmlSymbol.
-     */
-    /**
-     * Getter for property htmlSymbol.
-     * @return Value of property htmlSymbol.
-     */
-    /**
-     * Setter for property htmlSymbol.
-     * @param htmlSymbol New value of property htmlSymbol.
-     */
-    var htmlSymbol: String? = null
-
-    /**
-     * Holds value of property weight.
-     */
-    /**
-     * Getter for property weight.
-     * @return Value of property weight.
-     */
-    /**
-     * Setter for property weight.
-     * @param weight New value of property weight.
-     */
-    var weight: Double = 0.toDouble()
-
-    /**
-     * Holds value of property meltingPoint.
-     */
-    /**
-     * Getter for property meltingPoint.
-     * @return Value of property meltingPoint.
-     */
-    /**
-     * Setter for property meltingPoint.
-     * @param meltingPoint New value of property meltingPoint.
-     */
-    var meltingPoint: Double = 0.toDouble()
-
-    /**
-     * Holds value of property boilingPoint.
-     */
-    /**
-     * Getter for property boilingPoint.
-     * @return Value of property boilingPoint.
-     */
-    /**
-     * Setter for property boilingPoint.
-     * @param boilingPoint New value of property boilingPoint.
-     */
-    var boilingPoint: Double = 0.toDouble()
-
-    /**
-     * Holds value of property density.
-     */
-    /**
-     * Getter for property density.
-     * @return Value of property density.
-     */
-    /**
-     * Setter for property density.
-     * @param density New value of property density.
-     */
-    var density: Double = 0.toDouble()
-
-    /**
-     * Holds value of property abunde.
-     */
-    /**
-     * Getter for property abunde.
-     * @return Value of property abunde.
-     */
-    /**
-     * Setter for property abunde.
-     * @param abunde New value of property abunde.
-     */
-    var abunde: Double = 0.toDouble()
-
-    /**
-     * Holds value of property abunds.
-     */
-    /**
-     * Getter for property abunds.
-     * @return Value of property abunds.
-     */
-    /**
-     * Setter for property abunds.
-     * @param abunds New value of property abunds.
-     */
-    var abunds: Double = 0.toDouble()
-
-    /**
-     * Holds value of property reactivity.
-     */
-    /**
-     * Getter for property reactivity.
-     * @return Value of property reactivity.
-     */
-    /**
-     * Setter for property reactivity.
-     * @param reactivity New value of property reactivity.
-     */
-    var reactivity: Double = 0.toDouble()
-
-    /**
-     * Holds value of property maxIpp.
-     */
-    /**
-     * Getter for property maxIpp.
-     * @return Value of property maxIpp.
-     */
-    /**
-     * Setter for property maxIpp.
-     * @param maxIpp New value of property maxIpp.
-     */
-    var maxIpp: Double = 0.toDouble()
-
-    /**
-     * Holds value of property name.
-     */
-    /**
-     * Getter for property name.
-     * @return Value of property name.
-     */
-    /**
-     * Setter for property name.
-     * @param name New value of property name.
-     */
-    var name: String? = null
-
-    /**
-     * Creates a new instance of ChemTable
-     */
-    constructor() {}
-
-    /**
-     * Creates a new instance of ChemTable
-     *
-     * @param atomicNumber The atomic number of the element
-     * @param symbol The chemical symbol of the element
-     * @param html An HTML symbol for the element
-     * @param name The name of the element
-     * @param atomicWeight The atomic weight of the element
-     * @param melt The melting point of the element (degrees Kelvin)
-     * @param boil The boiling point of the element (degrees Kelvin)
-     * @param density The density of the element
-     * @param abunde Element abundance data
-     * @param abunds Element abundance data
-     * @param rea The reactivity of the element
-     * @param maxIpp The max allowed inspired partial pressure for this element
-     * for a habitable planet
-     */
-    constructor(
-            atomicNumber: Int, symbol: String, html: String, name: String,
-            atomicWeight: Double, melt: Double, boil: Double, density: Double,
-            abunde: Double, abunds: Double, rea: Double, maxIpp: Double) {
-        this.number = atomicNumber
-        this.symbol = symbol
-        this.htmlSymbol = html
-        this.name = name
-        this.weight = atomicWeight
-        this.meltingPoint = melt
-        this.boilingPoint = boil
-        this.density = density
-        this.abunde = abunde
-        this.abunds = abunds
-        this.reactivity = rea
-        this.maxIpp = maxIpp
-    }
+data class ChemTable
+/**
+ * Creates a new instance of ChemTable
+ *
+ * @param number The atomic number of the element
+ * @param symbol The chemical symbol of the element
+ * @param htmlSymbol An HTML symbol for the element
+ * @param name The name of the element
+ * @param weight The atomic weight of the element
+ * @param meltingPoint The melting point of the element (degrees Kelvin)
+ * @param boilingPoint The boiling point of the element (degrees Kelvin)
+ * @param density The density of the element
+ * @param abunde Element abundance data
+ * @param abunds Element abundance data
+ * @param reactivity The reactivity of the element
+ * @param maxIpp The max allowed inspired partial pressure for this element
+ * for a habitable planet
+ */(
+        /**
+         * Setter for property number.
+         * @param number New value of property number.
+         */
+        var number: Int,
+        /**
+         * Setter for property symbol.
+         * @param symbol New value of property symbol.
+         */
+        var symbol: String?,
+        /**
+         * Setter for property htmlSymbol.
+         * @param htmlSymbol New value of property htmlSymbol.
+         */
+        var htmlSymbol: String?,
+        /**
+         * Setter for property name.
+         * @param name New value of property name.
+         */
+        var name: String?,
+        /**
+         * Setter for property weight.
+         * @param weight New value of property weight.
+         */
+        var weight: Double,
+        /**
+         * Setter for property meltingPoint.
+         * @param meltingPoint New value of property meltingPoint.
+         */
+        var meltingPoint: Double,
+        /**
+         * Setter for property boilingPoint.
+         * @param boilingPoint New value of property boilingPoint.
+         */
+        var boilingPoint: Double,
+        /**
+         * Setter for property density.
+         * @param density New value of property density.
+         */
+        var density: Double,
+        /**
+         * Setter for property abunde.
+         * @param abunde New value of property abunde.
+         */
+        var abunde: Double,
+        /**
+         * Setter for property abunds.
+         * @param abunds New value of property abunds.
+         */
+        var abunds: Double,
+        /**
+         * Setter for property reactivity.
+         * @param reactivity New value of property reactivity.
+         */
+        var reactivity: Double,
+        /**
+         * Setter for property maxIpp.
+         * @param maxIpp New value of property maxIpp.
+         */
+        var maxIpp: Double) {
 }

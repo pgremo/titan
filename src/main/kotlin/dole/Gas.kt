@@ -58,7 +58,7 @@ package dole
  * @version $Id: Gas.java,v 1.4 2006-07-06 06:58:33 martin Exp $
  */
 /** Creates a new instance of Gas  */
-class Gas {
+data class Gas (
 
     /**
      * Holds value of property surfacePressure.
@@ -71,7 +71,7 @@ class Gas {
      * Setter for property surfacePressure.
      * @param surfacePressure New value of property surfacePressure.
      */
-    var surfacePressure: Double = 0.toDouble()
+    var surfacePressure: Double = 0.toDouble(),
 
     /**
      * Holds value of property element.
@@ -85,4 +85,4 @@ class Gas {
      * @param element New value of property element.
      */
     var element: ChemTable? = null
-}
+)

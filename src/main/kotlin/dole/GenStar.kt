@@ -59,18 +59,25 @@ import java.util.*
  * @author martin
  * @version $Id: GenStar.java,v 1.14 2006-07-06 06:58:33 martin Exp $
  */
-class GenStar {
+class GenStar(utils: Random = Random()) {
 
     /** Map of classes to numbers  */
-    private val classMap = HashMap<String, Int>()
+    private val classMap = mapOf(
+            "O" to 0,
+            "B" to 1,
+            "A" to 2,
+            "F" to 3,
+            "G" to 4,
+            "K" to 5,
+            "M" to 6
+    )
 
     /** Object used to obtain random numbers  */
     /**
      * Getter for property utils.
      * @return Value of property utils.
      */
-    private var utils: Random? = null
-        private set
+    private var random: Random = utils
 
     // MagicNumber OFF
 
@@ -148,41 +155,11 @@ class GenStar {
     private val luminosityClass = arrayOf("Ia", "Ib", "II", "III", "IV", "V", "VI", "VII")
 
     /**
-     * Creates a new instance of GenStar
-     */
-    constructor() {
-        this.utils = Random()
-
-        computeProbabilitiesByClass()
-        computeProbabilities()
-
-        classMap.put("O", 0)
-        classMap.put("B", 1)
-        classMap.put("A", 2)
-        classMap.put("F", 3)
-        classMap.put("G", 4)
-        classMap.put("K", 5)
-        classMap.put("M", 6)
-    }
-
-    /**
-     * Creates a new instance of GenStar
-     *
-     * @param utils The object to use to obtain random numbers
-     */
-    constructor(utils: Random) {
-        this.utils = utils
-
-        computeProbabilitiesByClass()
-        computeProbabilities()
-    }
-
-    /**
      * Compute the table of probabilities by class
      */
     private fun computeProbabilitiesByClass() {
         var i: Int
-        var j: Int = 0
+        var j = 0
         var t: Double
         var total: Double
 
@@ -250,15 +227,11 @@ class GenStar {
     private fun generateStar(magClass: Int, specClass: Int): Primary {
         val sun = Primary()
 
-        var loopI = 0
-        var t: Double
-
         var mClass = magClass
 
-        val starSpectralClass = this.spectralClass[specClass]
-        sun.spectralClass = starSpectralClass
+        sun.spectralClass = spectralClass[specClass]
 
-        t = this.utils!!.nextDouble()
+        var t = this.random.nextDouble()
         /* Give it a random subclass */
         sun.spectralSubclass = (t * 10.0).toInt()
         sun.absoluteMagnitude = MIN_MAGNITUDE.toDouble() + mClass.toDouble() + t
@@ -268,8 +241,9 @@ class GenStar {
         /* Compute luminosity relative to Sun */
         sun.luminosity = Math.pow(2.5118, 4.7 - sun.absoluteMagnitude)
 
-        mClass = -1
+        var loopI = 0
 
+        mClass = -1
         while (loopI < N_LUM_CLASS && mClass < 0) {
             if (lClassMag[loopI][specClass] >= sun.absoluteMagnitude) {
                 mClass = loopI
@@ -279,23 +253,22 @@ class GenStar {
 
         sun.luminosityClass = this.luminosityClass[mClass]
 
-        when (mClass) {
+        sun.mass = when (mClass) {
             0, 1, 2, 3 -> {
                 /* Supergiants & giants */
-                t = Math.log(sun.luminosity) + this.utils!!.nextDouble() / 5.0
-                sun.mass = Math.exp(t / 3.0)
+                t = Math.log(sun.luminosity) + this.random.nextDouble() / 5.0
+                Math.exp(t / 3.0)
             }
 
             4, 5, 6 -> {
                 /* subgiants, dwarfs, subdwarfs */
-                t = Math.log(sun.luminosity) + 0.1 +
-                        (this.utils!!.nextDouble() / 5.0 - 0.1)
-                sun.mass = Math.exp(t / 4.1)
+                t = Math.log(sun.luminosity) + 0.1 + (this.random.nextDouble() / 5.0 - 0.1)
+                Math.exp(t / 4.1)
             }
 
             7 ->
                 /* white dwarfs */
-                sun.mass = 0.7 * this.utils!!.nextDouble() + 0.6
+                0.7 * this.random.nextDouble() + 0.6
 
             else -> {
                 throw AssertionError("Unexpected program state")
@@ -308,10 +281,9 @@ class GenStar {
         sun.ecosphereOuter = 1.1 * sun.ecosphere
 
         // assign these parameters entirely randomly for now
-
-        sun.rightAscension = this.utils!!.nextDouble() * 360.0
-        sun.declination = this.utils!!.nextDouble() * 180.0 - 90.0
-        sun.distance = this.utils!!.nextDouble() * 500.0 + 10.0
+        sun.rightAscension = this.random.nextDouble() * 360.0
+        sun.declination = this.random.nextDouble() * 180.0 - 90.0
+        sun.distance = this.random.nextDouble() * 500.0 + 10.0
 
         return sun
     }
@@ -326,7 +298,7 @@ class GenStar {
         var i = -1
         var j = -1
 
-        val rnd = this.utils!!.nextDouble()
+        val rnd = random.nextDouble()
 
         var loopI = 0
         var loopJ: Int
@@ -355,7 +327,7 @@ class GenStar {
      * not one of those known to this class.
      */
     fun generateStar(specClass: String): Primary {
-        val theClass = classMap[specClass] ?: throw IllegalArgumentException("Unknown spectral class: " + specClass)
+        val theClass = classMap[specClass] ?: throw IllegalArgumentException("Unknown spectral class: $specClass")
 
         return generateStar(theClass)
     }
@@ -367,14 +339,12 @@ class GenStar {
      * @return A randomly generated star of the specified class
      */
     private fun generateStar(specClass: Int): Primary {
+        val rnd = random.nextDouble()
+
         var i = -1
-
-        val rnd = this.utils!!.nextDouble()
-
-        var loopI: Int = 0
-
+        var loopI = 0
         while (loopI < N_MAG_CLASS && i < 0) {
-            if (this.starCountsClass[loopI][specClass] >= rnd) {
+            if (starCountsClass[loopI][specClass] >= rnd) {
                 i = loopI
             }
             ++loopI
@@ -452,5 +422,10 @@ class GenStar {
 
         /** Constant for lumoinosity class VII  */
         val LUMINOSITY_CLASS_VII = 7
+    }
+
+    init {
+        computeProbabilitiesByClass()
+        computeProbabilities()
     }
 }
