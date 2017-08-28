@@ -188,7 +188,7 @@ internal constructor(private val random: Random) {
      * @param star The star for this solar system
      * @param p    The planet being constructed
      */
-    private fun evolvePlanet(star: Primary, p: Planet) {
+    private fun evolve(star: Primary, p: Planet) {
         /* Our planetoid will accrete all matter within it's orbit . . . */
         val perihelion = p.perihelion
         val aphelion = p.aphelion
@@ -282,7 +282,7 @@ internal constructor(private val random: Random) {
      * @param star The star for the solar system
      * @param p    The planet being considered
      */
-    private fun checkCoalesence(planets: SortedList<Planet, Double>, star: Primary, p: Planet) {
+    private fun coalesence(planets: SortedList<Planet, Double>, star: Primary, p: Planet): SortedList<Planet, Double> {
         var merged = true
 
         while (merged) {
@@ -327,9 +327,10 @@ internal constructor(private val random: Random) {
             }
 
             if (merged) {
-                evolvePlanet(star, p)
+                evolve(star, p)
             }
         }
+        return planets
     }
 
     /**
@@ -346,17 +347,17 @@ internal constructor(private val random: Random) {
         dust = listOf(record)
         gas = listOf(record.copy())
 
-        val planets = SortedList(ArrayList(), Planet::a)
+        var planets = SortedList(ArrayList(), Planet::a)
 
         /* . . . and we're off to play God. */
         while (!dust.isEmpty()) {
             val p = createPlanet()
 
-            evolvePlanet(star, p)
+            evolve(star, p)
 
             planets.add(p)
 
-            checkCoalesence(planets, star, p)
+            planets = coalesence(planets, star, p)
         }
 
         return planets.filter { it.mass > 2e-8 }.map { planetStats.computePlanetStats(star, it) }
